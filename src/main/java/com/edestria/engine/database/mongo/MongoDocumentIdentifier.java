@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor @Getter
-class MongoDocumentIdentifier {
+public class MongoDocumentIdentifier {
 
     private Object identifier;
-
 }
