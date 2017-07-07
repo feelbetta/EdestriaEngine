@@ -1,4 +1,11 @@
 package com.edestria.engine.database.mongo;
 
-public class MongoDocumentIdentifier {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor @Getter
+class MongoDocumentIdentifier {
+
+    private Object identifier;
+
 }
