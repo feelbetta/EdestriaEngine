@@ -15,12 +15,24 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 public class EngineFiles {
 
     private static final String SEPARATOR = File.separator;
 
     private final EdestriaEngine edestriaEngine;
+
+    public EngineFiles(EdestriaEngine edestriaEngine) {
+        this.edestriaEngine = edestriaEngine;
+        File properties = new File(this.edestriaEngine + File.separator + "settings.properties");
+        if (properties.exists()) {
+            return;
+        }
+        try {
+            properties.createNewFile();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
 
     public Object getProperty(String fileName, String property) {
         File path = new File(this.edestriaEngine + File.separator);

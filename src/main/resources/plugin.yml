@@ -1,4 +1,5 @@
 name: EdestriaEngine
 version: ${project.version}
 
-main:
+main: com.edestria.engine.EdestriaEngine
+load: STARTUP
