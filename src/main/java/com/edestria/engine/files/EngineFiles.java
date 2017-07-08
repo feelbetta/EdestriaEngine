@@ -23,7 +23,7 @@ public class EngineFiles {
 
     public EngineFiles(EdestriaEngine edestriaEngine) {
         this.edestriaEngine = edestriaEngine;
-        File properties = new File(this.edestriaEngine + File.separator + "settings.properties");
+        File properties = new File(this.edestriaEngine.getDataFolder() + File.separator + "settings.properties");
         if (properties.exists()) {
             return;
         }
@@ -31,7 +31,7 @@ public class EngineFiles {
     }
 
     public Object getProperty(String fileName, String property) {
-        File path = new File(this.edestriaEngine + File.separator);
+        File path = new File(this.edestriaEngine.getDataFolder() + File.separator);
         if (path.listFiles() == null) {
             return null;
         }
