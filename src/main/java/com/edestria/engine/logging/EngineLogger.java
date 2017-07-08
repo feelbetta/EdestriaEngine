@@ -6,6 +6,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+@AllArgsConstructor
 public class EngineLogger {
 
     @AllArgsConstructor
@@ -24,10 +25,6 @@ public class EngineLogger {
     }
 
     private final EdestriaEngine edestriaEngine;
-
-    public EngineLogger(EdestriaEngine edestriaEngine) {
-        this.edestriaEngine = edestriaEngine;
-    }
 
     public void log(Plugin plugin, LogType logType, String message) {
         Bukkit.getConsoleSender().sendMessage(plugin.getDescription().getPrefix() + " " + logType + message);

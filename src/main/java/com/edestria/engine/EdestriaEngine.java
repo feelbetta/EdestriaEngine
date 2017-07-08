@@ -1,12 +1,11 @@
 package com.edestria.engine;
 
 import com.edestria.engine.database.mongo.connection.MongoConnection;
+import com.edestria.engine.database.mongo.files.EngineFiles;
 import com.edestria.engine.database.mongo.services.MongoInsertionService;
 import com.edestria.engine.logging.EngineLogger;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Arrays;
 
 public class EdestriaEngine extends JavaPlugin {
 
@@ -21,10 +20,15 @@ public class EdestriaEngine extends JavaPlugin {
     * */
     @Getter private EngineLogger engineLogger;
 
+    /*
+    * Files
+    * */
+    @Getter private EngineFiles engineFiles;
+
     @Override
     public void onEnable() {
-        this.registerServices();
         this.reigsterConnections();
+        this.registerServices();
         this.engineLogger = new EngineLogger(this);
     }
 
@@ -37,9 +41,9 @@ public class EdestriaEngine extends JavaPlugin {
     private void reigsterConnections() {
         this.mongoConnection =
                 MongoConnection.builder()
-                        .host("localhost")
-                        .port(27017)
-                        .collections(Arrays.asList("players", "holograms", "characters", "quests"))
+                        .host(this.engineFiles.getStringProperty("settings", "host"))
+                        .port(this.engineFiles.getIntegerProperty("settings", "port"))
+                        .collections(this.engineFiles.getStringListProperty("settings", "collections"))
                         .edestriaEngine(this)
                         .build();
         this.mongoConnection.connect();
@@ -47,5 +51,9 @@ public class EdestriaEngine extends JavaPlugin {
 
     private void registerServices() {
         this.mongoInsertionService = new MongoInsertionService(this);
+    }
+
+    private void registerFiles() {
+        this.engineFiles = new EngineFiles(this);
     }
 }

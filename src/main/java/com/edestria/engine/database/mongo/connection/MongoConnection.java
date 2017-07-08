@@ -10,7 +10,6 @@ import com.mongodb.client.MongoDatabase;
 import lombok.Builder;
 import org.bukkit.Bukkit;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MongoConnection {

@@ -41,6 +41,7 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>plugin.yml</include>
+                    <include>settings.properties</include>
                 </includes>
             </resource>
         </resources>
