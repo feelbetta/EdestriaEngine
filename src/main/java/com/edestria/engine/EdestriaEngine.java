@@ -6,6 +6,8 @@ import com.edestria.engine.logging.EngineLogger;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
+
 public class EdestriaEngine extends JavaPlugin {
 
     /*
@@ -37,7 +39,7 @@ public class EdestriaEngine extends JavaPlugin {
                 MongoConnection.builder()
                         .host("localhost")
                         .port(27017)
-                        .collections("profiles", "holograms", "characters")
+                        .collections(Arrays.asList("players", "holograms", "characters", "quests"))
                         .edestriaEngine(this)
                         .build();
         this.mongoConnection.connect();
