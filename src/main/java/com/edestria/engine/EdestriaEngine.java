@@ -1,11 +1,14 @@
 package com.edestria.engine;
 
 import com.edestria.engine.database.mongo.connection.MongoConnection;
-import com.edestria.engine.database.mongo.services.MongoInsertionService;
+import com.edestria.engine.database.mongo.services.MongoUpsertService;
 import com.edestria.engine.files.EngineFiles;
 import com.edestria.engine.logging.EngineLogger;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Arrays;
 
 public class EdestriaEngine extends JavaPlugin {
 
@@ -13,7 +16,7 @@ public class EdestriaEngine extends JavaPlugin {
     * Mongo Services
     * */
     @Getter private MongoConnection mongoConnection;
-    @Getter private MongoInsertionService mongoInsertionService;
+    @Getter private MongoUpsertService mongoUpsertService;
 
     /*
     * Logging
@@ -27,15 +30,15 @@ public class EdestriaEngine extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.engineLogger = new EngineLogger(this);
         this.registerFiles();
         this.reigsterConnections();
         this.registerServices();
-        this.engineLogger = new EngineLogger(this);
     }
 
     @Override
     public void onDisable() {
-        this.mongoInsertionService.purgeExecutions();
+        this.mongoUpsertService.purgeExecutions();
         this.mongoConnection.disconnect();
     }
 
@@ -47,11 +50,15 @@ public class EdestriaEngine extends JavaPlugin {
                         .collections(this.engineFiles.getStringListProperty("settings", "collections"))
                         .edestriaEngine(this)
                         .build();
-        this.mongoConnection.connect();
+        if (this.mongoConnection.connect()) {
+            return;
+        }
+        Bukkit.getPluginManager().disablePlugin(this);
+        Arrays.stream(Bukkit.getPluginManager().getPlugins()).filter(plugin -> plugin.getDescription().getDepend().contains(this.getName())).forEach(Bukkit.getPluginManager()::disablePlugin);
     }
 
     private void registerServices() {
-        this.mongoInsertionService = new MongoInsertionService(this);
+        this.mongoUpsertService = new MongoUpsertService(this);
     }
 
     private void registerFiles() {

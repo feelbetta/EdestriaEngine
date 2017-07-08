@@ -1,18 +1,18 @@
 package com.edestria.engine.files;
 
 import com.edestria.engine.EdestriaEngine;
+import com.edestria.engine.database.mongo.connection.MongoConnection;
+import com.google.common.collect.ImmutableMap;
 import lombok.AllArgsConstructor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class EngineFiles {
@@ -23,21 +23,11 @@ public class EngineFiles {
 
     public EngineFiles(EdestriaEngine edestriaEngine) {
         this.edestriaEngine = edestriaEngine;
-        File properties = new File(this.edestriaEngine.getDataFolder() + File.separator + "settings.properties");
-        if (properties.exists()) {
-            return;
-        }
-        properties.getParentFile().mkdir();
-        try {
-            properties.createNewFile();
-            Properties props = new Properties();
-            try(InputStream resourceStream = this.edestriaEngine.getResource("settings.properties")) {
-                props.load(resourceStream);
-            }
-            props.store(new FileWriter(properties), null);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        this.createFile("settings", "yml", ImmutableMap.of(
+                "port", 6969,
+                "host", "none",
+                "collections", "players,holograms,characters,quests"
+        ));
     }
 
     public Object getProperty(String fileName, String property) {
@@ -70,11 +60,25 @@ public class EngineFiles {
     }
 
     public int getIntegerProperty(String fileName, String property) {
-        return this.getProperty(fileName, property) == null ? 0 : Integer.parseInt((String) this.getProperty(fileName, property));
+        return this.getProperty(fileName, property) == null ? 0 : (Integer) this.getProperty(fileName, property);
     }
 
     public List<String> getStringListProperty(String fileName, String property) {
         return this.getProperty(fileName, property) == null ? new ArrayList<>() : Arrays.stream(this.getStringProperty(fileName, property).split(",")).collect(Collectors.toList());
+    }
+
+    private void createFile(String name, String extension, Map<String, Object> values) {
+        File file = new File(this.edestriaEngine.getDataFolder() + SEPARATOR + name + "." + extension);
+        if (file.exists()) {
+            return;
+        }
+        file.getParentFile().mkdir();
+        try {
+            file.createNewFile();
+            Files.write(Paths.get(file.toURI()), values.entrySet().stream().map(entry -> entry.getKey() + (extension.equals("properties") ? "=" : ": ") + entry.getValue()).collect(Collectors.toList()), Charset.forName("UTF-8"));
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     private String getFileExtension(File file) {

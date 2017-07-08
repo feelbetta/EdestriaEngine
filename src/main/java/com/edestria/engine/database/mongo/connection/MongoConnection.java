@@ -10,7 +10,11 @@ import com.mongodb.client.MongoDatabase;
 import lombok.Builder;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,19 +39,25 @@ public class MongoConnection {
         Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
     }
 
-    public void connect() {
-        Bukkit.getScheduler().runTaskAsynchronously(this.edestriaEngine, () -> {
-            try {
-                this.mongoClient = new MongoClient(new ServerAddress(this.host, this.port), MongoClientOptions.builder().connectTimeout(MongoConnection.TIME_OUT).build());
-                this.mongoClient.getAddress();
-                this.mongoDatabase = this.mongoClient.getDatabase(MongoConnection.DATABASE_NAME);
-                this.collections.forEach(this.mongoDatabase::getCollection);
-                this.edestriaEngine.getEngineLogger().log(EngineLogger.LogType.INFO, "Successfully established database connection.");
-            } catch (Exception exception) {
-                this.edestriaEngine.getEngineLogger().log(EngineLogger.LogType.WARNING, "Unable to connect to database services.");
-                Bukkit.getPluginManager().disablePlugin(this.edestriaEngine);
-            }
-        });
+    public boolean connect() {
+        try {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    this.mongoClient = new MongoClient(new ServerAddress(this.host, this.port), MongoClientOptions.builder().connectTimeout(MongoConnection.TIME_OUT).build());
+                    this.mongoClient.getAddress();
+                    this.mongoDatabase = this.mongoClient.getDatabase(MongoConnection.DATABASE_NAME);
+                    //this.collections.forEach(this.mongoDatabase::getCollection);
+                    this.edestriaEngine.getEngineLogger().log(EngineLogger.LogType.INFO, "Successfully established database connection.");
+                    return true;
+                } catch (Exception exception) {
+                    this.edestriaEngine.getEngineLogger().log(EngineLogger.LogType.WARNING, "Unable to connect to database services.");
+                    return false;
+                }
+            }).get();
+        } catch (InterruptedException | ExecutionException exception) {
+            exception.printStackTrace();
+        }
+        return false;
     }
 
     public void disconnect() {

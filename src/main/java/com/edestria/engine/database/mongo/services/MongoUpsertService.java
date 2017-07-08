@@ -5,13 +5,14 @@ import com.edestria.engine.database.mongo.MongoDocumentEntry;
 import com.edestria.engine.database.mongo.MongoDocumentIdentifier;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class MongoInsertionService {
+public class MongoUpsertService {
 
     public interface MongoDocumentExecution {
 
@@ -22,13 +23,13 @@ public class MongoInsertionService {
 
     private final Queue<MongoDocumentExecution> executions;
 
-    public MongoInsertionService(EdestriaEngine edestriaEngine) {
+    public MongoUpsertService(EdestriaEngine edestriaEngine) {
         this.edestriaEngine = edestriaEngine;
         this.executions = new LinkedList<>();
     }
 
-    public MongoInsertionService append(MongoCollection mongoCollection, MongoDocumentIdentifier mongoDocumentIdentifier, MongoDocumentEntry mongoDocumentEntry) {
-        this.executions.add(() -> mongoCollection.updateOne(Filters.eq((String) mongoDocumentIdentifier.getIdentifier(), mongoDocumentIdentifier.getIdentifierValue()), new Document("$set", new Document((String) mongoDocumentEntry.getKey(), mongoDocumentEntry.getValue()))));
+    public MongoUpsertService append(MongoCollection mongoCollection, MongoDocumentIdentifier mongoDocumentIdentifier, MongoDocumentEntry mongoDocumentEntry) {
+        this.executions.add(() -> mongoCollection.updateOne(Filters.eq((String) mongoDocumentIdentifier.getIdentifier(), mongoDocumentIdentifier.getIdentifierValue()), new Document("$set", new Document((String) mongoDocumentEntry.getKey(), mongoDocumentEntry.getValue())), new UpdateOptions().upsert(true)));
         return this;
     }
 
