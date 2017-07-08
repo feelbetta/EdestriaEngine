@@ -56,7 +56,7 @@ public class EngineFiles {
     }
 
     public List<String> getStringListProperty(String fileName, String property) {
-        return this.getProperty(fileName, property) == null ? new ArrayList<>() : Arrays.stream(((String) this.getProperty(fileName, property)).split(",")).collect(Collectors.toList());
+        return this.getProperty(fileName, property) == null ? new ArrayList<>() : Arrays.stream(this.getStringProperty(fileName, property).split(",")).collect(Collectors.toList());
     }
 
     private String getFileExtension(File file) {
