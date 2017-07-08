@@ -27,6 +27,7 @@ public class EdestriaEngine extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.registerFiles();
         this.reigsterConnections();
         this.registerServices();
         this.engineLogger = new EngineLogger(this);
