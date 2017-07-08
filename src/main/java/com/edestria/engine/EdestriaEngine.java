@@ -22,24 +22,25 @@ public class EdestriaEngine extends JavaPlugin {
     @Override
     public void onEnable() {
         this.registerServices();
+        this.reigsterConnections();
         this.engineLogger = new EngineLogger(this);
-        this.mongoConnection =
-                MongoConnection.builder()
-                .host("localhost")
-                .port(27017)
-                .collections("profiles", "holograms", "characters")
-                .edestriaEngine(this)
-                .build();
-        if (this.mongoConnection.connect()) {
-            return;
-        }
-        setEnabled(false);
-
     }
 
     @Override
     public void onDisable() {
         this.mongoInsertionService.purgeExecutions();
+        this.mongoConnection.disconnect();
+    }
+
+    private void reigsterConnections() {
+        this.mongoConnection =
+                MongoConnection.builder()
+                        .host("localhost")
+                        .port(27017)
+                        .collections("profiles", "holograms", "characters")
+                        .edestriaEngine(this)
+                        .build();
+        this.mongoConnection.connect();
     }
 
     private void registerServices() {
