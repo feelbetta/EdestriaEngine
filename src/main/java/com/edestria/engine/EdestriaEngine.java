@@ -1,8 +1,8 @@
 package com.edestria.engine;
 
 import com.edestria.engine.database.mongo.connection.MongoConnection;
-import com.edestria.engine.database.mongo.files.EngineFiles;
 import com.edestria.engine.database.mongo.services.MongoInsertionService;
+import com.edestria.engine.files.EngineFiles;
 import com.edestria.engine.logging.EngineLogger;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
