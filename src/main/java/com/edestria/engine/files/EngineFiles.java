@@ -27,11 +27,7 @@ public class EngineFiles {
         if (properties.exists()) {
             return;
         }
-        try {
-            properties.createNewFile();
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        properties.getParentFile().mkdirs();
     }
 
     public Object getProperty(String fileName, String property) {
