@@ -27,7 +27,7 @@ public class EngineLogger {
     private final EdestriaEngine edestriaEngine;
 
     public void log(Plugin plugin, LogType logType, String message) {
-        Bukkit.getConsoleSender().sendMessage(plugin.getDescription().getPrefix() == null ? plugin.getDescription().getName() : plugin.getDescription().getPrefix() + " " + logType + message);
+        Bukkit.getConsoleSender().sendMessage((plugin.getDescription().getPrefix() == null ? plugin.getDescription().getFullName() : plugin.getDescription().getPrefix()) + " " + logType + message);
     }
 
     public void log(LogType logType, String message) {
