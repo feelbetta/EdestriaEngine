@@ -30,6 +30,11 @@ public class EngineFiles {
         properties.getParentFile().mkdir();
         try {
             properties.createNewFile();
+            Properties props = new Properties();
+            try(InputStream resourceStream = this.edestriaEngine.getResource("settings.properties")) {
+                props.load(resourceStream);
+            }
+            props.store(new FileWriter(properties), null);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -51,7 +56,7 @@ public class EngineFiles {
             }
             if (this.getFileExtension(file).equals("properties")) {
                 Properties properties = new Properties();
-                properties.load(new FileInputStream(fileName + ".properties"));
+                properties.load(new FileInputStream(path + File.separator +  fileName + ".properties"));
                 return properties.get(property);
             }
         } catch (IOException exception) {
@@ -65,7 +70,7 @@ public class EngineFiles {
     }
 
     public int getIntegerProperty(String fileName, String property) {
-        return this.getProperty(fileName, property) == null ? 0 : (int) this.getProperty(fileName, property);
+        return this.getProperty(fileName, property) == null ? 0 : Integer.parseInt((String) this.getProperty(fileName, property));
     }
 
     public List<String> getStringListProperty(String fileName, String property) {

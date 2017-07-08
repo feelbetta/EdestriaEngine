@@ -19,6 +19,7 @@ public class MongoConnection {
     private final EdestriaEngine edestriaEngine;
 
     private static final String DATABASE_NAME = "edestria";
+    private static final int TIME_OUT = 3000;
     private final String host;
     private final int port;
     private MongoClient mongoClient;
@@ -37,7 +38,7 @@ public class MongoConnection {
     public void connect() {
         Bukkit.getScheduler().runTaskAsynchronously(this.edestriaEngine, () -> {
             try {
-                this.mongoClient = new MongoClient(new ServerAddress(this.host, this.port), MongoClientOptions.builder().build());
+                this.mongoClient = new MongoClient(new ServerAddress(this.host, this.port), MongoClientOptions.builder().connectTimeout(MongoConnection.TIME_OUT).build());
                 this.mongoClient.getAddress();
                 this.mongoDatabase = this.mongoClient.getDatabase(MongoConnection.DATABASE_NAME);
                 this.collections.forEach(this.mongoDatabase::getCollection);
