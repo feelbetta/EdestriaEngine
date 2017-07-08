@@ -46,6 +46,7 @@ public class MongoConnection {
                     this.mongoClient = new MongoClient(new ServerAddress(this.host, this.port), MongoClientOptions.builder().connectTimeout(MongoConnection.TIME_OUT).build());
                     this.mongoClient.getAddress();
                     this.mongoDatabase = this.mongoClient.getDatabase(MongoConnection.DATABASE_NAME);
+                    this.collections.forEach(mongoDatabase::createCollection);
                     this.edestriaEngine.getEngineLogger().log(EngineLogger.LogType.INFO, "Successfully established database connection.");
                     return true;
                 } catch (Exception exception) {
