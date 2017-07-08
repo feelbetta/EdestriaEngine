@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 
 public class MongoRetrievalService {
 
-    private EdestriaEngine edestriaEngine;
+    private final EdestriaEngine edestriaEngine;
 
     public MongoRetrievalService(EdestriaEngine edestriaEngine) {
         this.edestriaEngine = edestriaEngine;
