@@ -25,11 +25,11 @@ public class MongoConnection {
     private final List<String> collections;
 
     @Builder
-    public MongoConnection(EdestriaEngine edestriaEngine, String host, int port, String... collections) {
+    public MongoConnection(EdestriaEngine edestriaEngine, String host, int port, List<String> collections) {
         this.edestriaEngine = edestriaEngine;
         this.host = host;
         this.port = port;
-        this.collections = Arrays.asList(collections);
+        this.collections = collections;
     }
 
     public void connect() {
