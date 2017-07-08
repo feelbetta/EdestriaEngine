@@ -11,6 +11,8 @@ import lombok.Builder;
 import org.bukkit.Bukkit;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MongoConnection {
 
@@ -29,6 +31,7 @@ public class MongoConnection {
         this.host = host;
         this.port = port;
         this.collections = collections;
+        Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
     }
 
     public void connect() {
