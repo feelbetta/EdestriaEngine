@@ -3,16 +3,20 @@ package com.edestria.engine.database.mongo.services;
 import com.edestria.engine.EdestriaEngine;
 import com.edestria.engine.database.mongo.MongoDocumentEntry;
 import com.edestria.engine.database.mongo.MongoDocumentIdentifier;
+import com.edestria.engine.servicepurge.Purgeable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class MongoUpsertService {
+public class MongoUpsertService implements Purgeable {
 
     public interface MongoDocumentExecution {
 
@@ -44,7 +48,8 @@ public class MongoUpsertService {
         });
     }
 
-    public void purgeExecutions() {
+    @Override
+    public void purge() {
         this.executions.clear();
     }
 }

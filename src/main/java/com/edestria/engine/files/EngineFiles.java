@@ -1,9 +1,7 @@
 package com.edestria.engine.files;
 
 import com.edestria.engine.EdestriaEngine;
-import com.edestria.engine.database.mongo.connection.MongoConnection;
 import com.google.common.collect.ImmutableMap;
-import lombok.AllArgsConstructor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

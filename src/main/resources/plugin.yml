@@ -2,5 +2,4 @@ name: EdestriaEngine
 version: ${project.version}
 
 main: com.edestria.engine.EdestriaEngine
-load: STARTUP
 loadbefore: [Edestria]
