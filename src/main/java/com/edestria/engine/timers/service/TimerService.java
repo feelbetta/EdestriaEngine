@@ -23,17 +23,21 @@ public class TimerService implements Purgeable {
     }
 
     @Builder(builderMethodName = "counterBuilder")
-    public Counter createCounter(String name) {
+    private Counter createCounter(String name) {
         stopIfExists(name);
         this.timers.put(name.toLowerCase(), new Counter(name.toLowerCase(), this.edestriaEngine));
         return (Counter) this.timers.get(name.toLowerCase());
     }
 
     @Builder(builderMethodName = "countdownBuilder")
-    public Countdown createCountdown(String name, TimeUnit timeUnit, int time) {
+    private Countdown createCountdown(String name, TimeUnit timeUnit, int time, Countdown.CountdownCompletion countdownCompletion) {
         stopIfExists(name);
-        this.timers.put(name.toLowerCase(), new Countdown(name.toLowerCase(), this.edestriaEngine, timeUnit, time));
+        this.timers.put(name.toLowerCase(), new Countdown(name.toLowerCase(), this.edestriaEngine, timeUnit, time, countdownCompletion));
         return (Countdown) this.timers.get(name.toLowerCase());
+    }
+
+    public void stopTimer(String name) {
+        this.stopIfExists(name);
     }
 
     private void stopIfExists(String name) {
