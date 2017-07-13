@@ -5,12 +5,18 @@ import com.edestria.engine.sending.Sendable;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 
-public abstract class Message implements Sendable {
+@Getter
+public abstract class Message<T extends Message<T>> implements Sendable {
 
-    @Getter private String message;
+    private String message;
     private MessageSound messageSound;
 
     public Message(String message) {
         this.message = ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public T withMessageSound(MessageSound messageSound) {
+        this.messageSound = messageSound;
+        return (T) this;
     }
 }

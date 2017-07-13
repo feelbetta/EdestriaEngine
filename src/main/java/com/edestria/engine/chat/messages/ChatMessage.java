@@ -1,8 +1,6 @@
 package com.edestria.engine.chat.messages;
 
 import com.edestria.engine.chat.Message;
-import com.edestria.engine.chat.sounds.MessageSound;
-import lombok.Builder;
 import lombok.Getter;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -10,35 +8,48 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class ChatMessage extends Message {
+public class ChatMessage extends Message<ChatMessage> {
 
     @Getter private TextComponent textComponent;
-    private MessageSound messageSound;
-    private String hover, url;
+    private String hoverMessage, url;
 
-    private ChatMessage additional;
+    private ChatMessage additionalChatMessage;
 
-    @Builder
-    public ChatMessage(String message, MessageSound messageSound, String hover, String url, ChatMessage additional) {
-        super(message);
+    public ChatMessage(String textComponent) {
+        super(textComponent);
         this.textComponent = new TextComponent(this.getMessage());
-        this.messageSound = messageSound;
-        this.hover = hover;
+    }
+
+    public ChatMessage withHoverMessage(String hoverMessage) {
+        this.hoverMessage = hoverMessage;
+        return this;
+    }
+
+    public ChatMessage withURL(String url) {
         this.url = url;
-        this.additional = additional;
+        return this;
+    }
+
+    public ChatMessage withAdditionalChatMessage(ChatMessage additionalChatMessage) {
+        this.additionalChatMessage = additionalChatMessage;
+        return this;
     }
 
     @Override
     public void to(Player player) {
-        if (this.hover != null) {
-            this.textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent(ChatColor.translateAlternateColorCodes('&', this.hover))}));
+        if (this.hoverMessage != null) {
+            this.textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent(ChatColor.translateAlternateColorCodes('&', this.hoverMessage))}));
         }
         if (this.url != null) {
             this.textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, this.url));
         }
-        if (this.additional != null) {
-            this.textComponent.addExtra(this.additional.getTextComponent());
+        if (this.additionalChatMessage != null) {
+            this.textComponent.addExtra(this.additionalChatMessage.textComponent);
         }
-        player.spigot().sendMessage(this.textComponent);
+        player.spigot().sendMessage(this.getTextComponent());
+        if (this.getMessageSound() == null) {
+            return;
+        }
+        getMessageSound().to(player);
     }
 }
