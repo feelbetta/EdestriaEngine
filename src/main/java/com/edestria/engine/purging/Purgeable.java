@@ -1,4 +1,4 @@
-package com.edestria.engine.servicepurge;
+package com.edestria.engine.purging;
 
 public interface Purgeable {
 

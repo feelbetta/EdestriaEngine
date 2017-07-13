@@ -1,7 +1,7 @@
 package com.edestria.engine.timers.service;
 
 import com.edestria.engine.EdestriaEngine;
-import com.edestria.engine.servicepurge.Purgeable;
+import com.edestria.engine.purging.Purgeable;
 import com.edestria.engine.timers.Countdown;
 import com.edestria.engine.timers.Counter;
 import com.edestria.engine.timers.Timer;
@@ -30,9 +30,9 @@ public class TimerService implements Purgeable {
     }
 
     @Builder(builderMethodName = "countdownBuilder")
-    private Countdown createCountdown(String name, TimeUnit timeUnit, int time, Countdown.CountdownCompletion countdownCompletion) {
+    private Countdown createCountdown(String name, TimeUnit timeUnit, int time, Timer.TimerCompletion timerCompletion) {
         stopIfExists(name);
-        this.timers.put(name.toLowerCase(), new Countdown(name.toLowerCase(), this.edestriaEngine, timeUnit, time, countdownCompletion));
+        this.timers.put(name.toLowerCase(), new Countdown(name.toLowerCase(), this.edestriaEngine, timeUnit, time, timerCompletion));
         return (Countdown) this.timers.get(name.toLowerCase());
     }
 

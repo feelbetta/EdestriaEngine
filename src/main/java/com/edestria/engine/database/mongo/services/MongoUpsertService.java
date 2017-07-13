@@ -3,16 +3,13 @@ package com.edestria.engine.database.mongo.services;
 import com.edestria.engine.EdestriaEngine;
 import com.edestria.engine.database.mongo.MongoDocumentEntry;
 import com.edestria.engine.database.mongo.MongoDocumentIdentifier;
-import com.edestria.engine.servicepurge.Purgeable;
+import com.edestria.engine.purging.Purgeable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.Queue;
 

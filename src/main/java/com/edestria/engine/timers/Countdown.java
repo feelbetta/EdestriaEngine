@@ -9,21 +9,14 @@ import java.util.concurrent.TimeUnit;
 
 public class Countdown extends Timer<Countdown> {
 
-    public interface CountdownCompletion {
-
-        void onFinish();
-    }
-
     private long start;
     private long elapsed;
     private BukkitTask task;
 
-    private CountdownCompletion countdownCompletion;
-
-    public Countdown(String name, EdestriaEngine edestriaEngine, TimeUnit timeUnit, int time, CountdownCompletion countdownCompletion) {
+    public Countdown(String name, EdestriaEngine edestriaEngine, TimeUnit timeUnit, int time, TimerCompletion timerCompletion) {
         super(name, edestriaEngine);
         this.start = timeUnit.toMillis(time);
-        this.countdownCompletion = countdownCompletion;
+        this.setTimerCompletion(timerCompletion);
     }
 
     @Override
@@ -31,15 +24,15 @@ public class Countdown extends Timer<Countdown> {
         this.task = new BukkitRunnable() {
             @Override
             public void run() {
-                elapsed = getTimeLeft() > 1000 ? (start - 2000) - (start -=TimeUnit.SECONDS.toMillis(1)) : start;
+                Countdown.this.elapsed = getTimeLeft() > 1000 ? (Countdown.this.start - 2000) - (Countdown.this.start -=TimeUnit.SECONDS.toMillis(1)) : Countdown.this.start;
                 if (getTimeLeft() > 1) {
                     return;
                 }
                 cancel();
-                if (countdownCompletion == null) {
+                if (getTimerCompletion() == null) {
                     return;
                 }
-                countdownCompletion.onFinish();
+                getTimerCompletion().onCompletion();
             }
         }.runTaskTimer(this.getEdestriaEngine(), 0, TimeUnit.SECONDS.toMillis(1) / 50);
     }
@@ -60,15 +53,10 @@ public class Countdown extends Timer<Countdown> {
     }
 
     public long getTimeLeft() {
-        // 10000 - 9000
         return this.start - this.elapsed;
     }
 
     public String getTimeLeftReadable() {
         return DurationFormatUtils.formatDuration(this.start - this.elapsed, "HH:mm:ss");
-    }
-
-    public void setCountdownCompletion(CountdownCompletion countdownCompletion) {
-        this.countdownCompletion = countdownCompletion;
     }
 }
