@@ -1,7 +1,7 @@
 package com.edestria.engine.chat;
 
 import com.edestria.engine.chat.sounds.MessageSound;
-import com.edestria.engine.sending.Sendable;
+import com.edestria.engine.Sendable;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 

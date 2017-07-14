@@ -4,17 +4,15 @@ import com.edestria.engine.commands.ecommands.CommandMaintenance;
 import com.edestria.engine.database.mongo.connection.MongoConnection;
 import com.edestria.engine.database.mongo.services.MongoRetrievalService;
 import com.edestria.engine.database.mongo.services.MongoUpsertService;
+import com.edestria.engine.eplayers.services.EPlayerService;
 import com.edestria.engine.files.EngineFiles;
 import com.edestria.engine.logging.EngineLogger;
-import com.edestria.engine.timers.Countdown;
-import com.edestria.engine.timers.Counter;
 import com.edestria.engine.timers.service.TimerService;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 public class EdestriaEngine extends JavaPlugin {
 
@@ -40,6 +38,11 @@ public class EdestriaEngine extends JavaPlugin {
     * */
     @Getter private TimerService timerService;
 
+    /*
+    * EPlayer Services
+    * */
+    @Getter private EPlayerService ePlayerService;
+
     @Override
     public void onEnable() {
         this.engineLogger = new EngineLogger(this);
@@ -54,6 +57,7 @@ public class EdestriaEngine extends JavaPlugin {
     public void onDisable() {
         this.mongoUpsertService.purge();
         this.timerService.purge();
+        this.ePlayerService.purge();
         this.mongoConnection.disconnect();
     }
 
@@ -76,6 +80,7 @@ public class EdestriaEngine extends JavaPlugin {
         this.mongoRetrievalService = new MongoRetrievalService(this);
         this.mongoUpsertService = new MongoUpsertService(this);
         this.timerService = new TimerService(this);
+        this.ePlayerService = new EPlayerService(this);
     }
 
     private void registerFiles() {

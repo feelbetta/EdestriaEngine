@@ -43,18 +43,13 @@ public abstract class ECommand extends ECommandInjector {
     private void registerCommands(JavaPlugin plugin, Object handler) {
         for (Method method : handler.getClass().getMethods()) {
             Class<?>[] params = method.getParameterTypes();
-            System.out.println(method.getName());
             if (params.length == 2 && CommandSender.class.isAssignableFrom(params[0]) && String[].class.equals(params[1])) {
-                System.out.println("OK");
                 if (isCommandProperty(method)) {
-                    System.out.println("IS COMMAND PROPERTY");
 
                     CommandProperties annotation = method.getAnnotation(CommandProperties.class);
                     this.setName(annotation.name());
                     if(((CraftServer) Bukkit.getServer()).getCommandMap().getCommands().stream().map(Command::getName).noneMatch(annotation.name()::equalsIgnoreCase)){
                         ((CraftServer) Bukkit.getServer()).getCommandMap().register(JavaPlugin.getPlugin(EdestriaEngine.class).getName(), this);
-                        System.out.println("ADDED TO MAP");
-                        ((CraftServer) Bukkit.getServer()).getCommandMap().getCommands().forEach(command -> System.out.println("Command: " + command.getName()));
                         if(!(Arrays.equals(annotation.aliases(), new String[]{""})))
                             setAliases(Lists.newArrayList(annotation.aliases()));
                         if(!annotation.description().equals(""))

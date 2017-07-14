@@ -1,6 +1,7 @@
 package com.edestria.engine.database.mongo.services;
 
 import com.edestria.engine.EdestriaEngine;
+import com.edestria.engine.database.mongo.MongoDocumentEntry;
 import com.edestria.engine.database.mongo.MongoDocumentIdentifier;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
@@ -26,9 +27,9 @@ public class MongoRetrievalService {
         this.edestriaEngine = edestriaEngine;
     }
 
-    public boolean exists(MongoCollection collection, String key, Object value) {
+    public boolean exists(MongoCollection collection, MongoDocumentEntry mongoDocumentEntry) {
         try {
-            return CompletableFuture.supplyAsync(() -> collection.find(new Document(key, value)).first() != null).get();
+            return CompletableFuture.supplyAsync(() -> collection.find(new Document((String) mongoDocumentEntry.getKey(), mongoDocumentEntry.getValue())).first() != null).get();
         } catch (InterruptedException | ExecutionException exception) {
             exception.printStackTrace();
         }

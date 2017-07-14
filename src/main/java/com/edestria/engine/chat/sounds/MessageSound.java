@@ -1,6 +1,6 @@
 package com.edestria.engine.chat.sounds;
 
-import com.edestria.engine.sending.Sendable;
+import com.edestria.engine.Sendable;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 

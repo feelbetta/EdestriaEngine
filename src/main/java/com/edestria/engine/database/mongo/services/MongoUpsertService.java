@@ -3,13 +3,14 @@ package com.edestria.engine.database.mongo.services;
 import com.edestria.engine.EdestriaEngine;
 import com.edestria.engine.database.mongo.MongoDocumentEntry;
 import com.edestria.engine.database.mongo.MongoDocumentIdentifier;
-import com.edestria.engine.purging.Purgeable;
+import com.edestria.engine.Purgeable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -29,10 +30,12 @@ public class MongoUpsertService implements Purgeable {
         this.executions = new LinkedList<>();
     }
 
-    public MongoUpsertService append(MongoCollection mongoCollection, MongoDocumentIdentifier mongoDocumentIdentifier, MongoDocumentEntry mongoDocumentEntry) {
+    public MongoUpsertService append(MongoCollection mongoCollection, MongoDocumentIdentifier mongoDocumentIdentifier, MongoDocumentEntry... mongoDocumentEntries) {
         this.executions.add(() -> {
             System.out.println("Executed on Thread: " + Thread.currentThread().getName() + " (" + Thread.currentThread().getId() + ")");
-            mongoCollection.updateOne(Filters.eq((String) mongoDocumentIdentifier.getIdentifier(), mongoDocumentIdentifier.getIdentifierValue()), new Document("$set", new Document((String) mongoDocumentEntry.getKey(), mongoDocumentEntry.getValue())), new UpdateOptions().upsert(true));
+            Arrays.stream(mongoDocumentEntries).forEach(mongoDocumentEntry -> {
+                mongoCollection.updateOne(Filters.eq((String) mongoDocumentIdentifier.getIdentifier(), mongoDocumentIdentifier.getIdentifierValue()), new Document("$set", new Document((String) mongoDocumentEntry.getKey(), mongoDocumentEntry.getValue())), new UpdateOptions().upsert(true));
+            });
         });
         return this;
     }

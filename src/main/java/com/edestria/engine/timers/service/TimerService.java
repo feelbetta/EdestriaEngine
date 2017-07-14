@@ -1,7 +1,7 @@
 package com.edestria.engine.timers.service;
 
 import com.edestria.engine.EdestriaEngine;
-import com.edestria.engine.purging.Purgeable;
+import com.edestria.engine.Purgeable;
 import com.edestria.engine.timers.Countdown;
 import com.edestria.engine.timers.Counter;
 import com.edestria.engine.timers.Timer;
