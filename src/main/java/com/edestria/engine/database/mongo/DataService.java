@@ -38,7 +38,7 @@ public abstract class DataService<Type, Identifier> implements Purgeable {
         Type typeObject = typeSupplier.get();
         if (!this.exists(this.mongoCollection, mongoDocumentIdentifier)) {
             try {
-                return (Type) Arrays.stream(typeSupplier.get().getClass().getConstructors()).filter(constructor -> constructor.getParameters().length > 0).findFirst().orElse(null).newInstance(identifier);
+                return (Type) Arrays.stream(typeSupplier.get().getClass().getConstructors()).filter(constructor -> constructor.getParameters().length == 1).findFirst().orElse(null).newInstance(identifier);
                 /*
                 *
                 * Find better way to grab constructor argument.
@@ -76,12 +76,17 @@ public abstract class DataService<Type, Identifier> implements Purgeable {
         return this.edestriaEngine.getMongoRetrievalService().exists(mongoCollection, new MongoDocumentEntry<>(mongoDocumentIdentifier.getIdentifier(), mongoDocumentIdentifier.getIdentifier()));
     }
 
-    private String getValueType(Map map){
+
+    /*
+    *
+    * Won't actually retrieve correct value during runtime, maybe useful for something in the future.
+    *
+    private String getValueType(Map<Object, Object> map){
         String valueKind = Object.class.getName();
-        for (Map.Entry<Object, Object> entry : (Iterable<Map.Entry<Object, Object>>) map.entrySet()) {
+        for (Map.Entry entry : map.entrySet()) {
             Object entryVal = entry.getValue();
             valueKind = entryVal.getClass().getName();
         }
         return valueKind;
-    }
+    } */
 }

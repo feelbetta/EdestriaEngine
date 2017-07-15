@@ -25,9 +25,6 @@ public class Guild {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj.equals(this)) {
-            return true;
-        }
-        return obj instanceof Guild && ((Guild) obj).getName().equals(this.getName());
+        return obj.equals(this) || obj instanceof Guild && ((Guild) obj).getName().equals(this.getName());
     }
 }
