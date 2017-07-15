@@ -45,7 +45,6 @@ public abstract class DataService<Type, Identifier> implements Purgeable {
                 *
                 * Find way to grab constructor argument.
                 * Otherwise, switch to full UUIDs ??
-                *
                 * */
             } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException exception) {
                 exception.printStackTrace();
