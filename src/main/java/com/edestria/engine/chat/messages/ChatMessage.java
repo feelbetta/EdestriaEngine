@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class ChatMessage extends Message<ChatMessage> {
 
-    @Getter private TextComponent textComponent;
+    @Getter private final TextComponent textComponent;
     private String hoverMessage, url;
 
     private ChatMessage additionalChatMessage;

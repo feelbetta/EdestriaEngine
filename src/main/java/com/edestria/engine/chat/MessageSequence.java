@@ -12,9 +12,9 @@ import java.util.concurrent.TimeUnit;
 
 public class MessageSequence implements Sendable {
 
-    private Plugin plugin;
+    private final Plugin plugin;
 
-    private List<Message> messages;
+    private final List<Message> messages;
     private long delay;
 
     public MessageSequence(Plugin plugin, Message... messages) {

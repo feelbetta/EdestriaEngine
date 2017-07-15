@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 public class MessageSound implements Sendable {
 
-    private Sound sound;
+    private final Sound sound;
 
     public MessageSound(Sound sound) {
         this.sound = sound;

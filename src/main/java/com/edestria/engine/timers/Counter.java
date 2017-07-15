@@ -7,7 +7,7 @@ import org.apache.commons.lang.time.StopWatch;
 
 public class Counter extends Timer<Counter> {
 
-    @Getter private StopWatch stopWatch;
+    @Getter private final StopWatch stopWatch;
 
     public Counter(String name, EdestriaEngine edestriaEngine) {
         super(name, edestriaEngine);

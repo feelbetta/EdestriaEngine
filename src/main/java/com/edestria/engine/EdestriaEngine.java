@@ -1,11 +1,11 @@
 package com.edestria.engine;
 
-import com.edestria.engine.commands.ecommands.CommandMaintenance;
 import com.edestria.engine.database.mongo.connection.MongoConnection;
 import com.edestria.engine.database.mongo.services.MongoRetrievalService;
 import com.edestria.engine.database.mongo.services.MongoUpsertService;
 import com.edestria.engine.eplayers.services.EPlayerService;
 import com.edestria.engine.files.EngineFiles;
+import com.edestria.engine.gson.services.GSONService;
 import com.edestria.engine.logging.EngineLogger;
 import com.edestria.engine.timers.service.TimerService;
 import lombok.Getter;
@@ -34,6 +34,11 @@ public class EdestriaEngine extends JavaPlugin {
     @Getter private EngineFiles engineFiles;
 
     /*
+    * Object serialization & deserialization
+    * */
+    @Getter private GSONService gsonService;
+
+    /*
     * Timer Services
     * */
     @Getter private TimerService timerService;
@@ -49,8 +54,6 @@ public class EdestriaEngine extends JavaPlugin {
         this.registerFiles();
         this.reigsterConnections();
         this.registerServices();
-
-        new CommandMaintenance(this);
     }
 
     @Override
@@ -81,6 +84,7 @@ public class EdestriaEngine extends JavaPlugin {
         this.mongoUpsertService = new MongoUpsertService(this);
         this.timerService = new TimerService(this);
         this.ePlayerService = new EPlayerService(this);
+        this.gsonService = new GSONService(this);
     }
 
     private void registerFiles() {

@@ -8,7 +8,7 @@ import org.bukkit.ChatColor;
 @Getter
 public abstract class Message<T extends Message<T>> implements Sendable {
 
-    private String message;
+    private final String message;
     private MessageSound messageSound;
 
     public Message(String message) {

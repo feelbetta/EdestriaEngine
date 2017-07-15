@@ -1,7 +1,6 @@
 package com.edestria.engine.timers;
 
 import com.edestria.engine.EdestriaEngine;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,8 +12,8 @@ public abstract class Timer<T> {
         void onCompletion();
     }
 
-    private String name;
-    private EdestriaEngine edestriaEngine;
+    private final String name;
+    private final EdestriaEngine edestriaEngine;
 
     @Setter private TimerCompletion timerCompletion;
 

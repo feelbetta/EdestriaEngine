@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TimerService implements Purgeable {
 
-    private EdestriaEngine edestriaEngine;
+    private final EdestriaEngine edestriaEngine;
 
     private Map<String, Timer> timers = new HashMap<>();
 
