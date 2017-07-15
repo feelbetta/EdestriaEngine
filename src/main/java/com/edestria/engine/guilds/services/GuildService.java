@@ -1,7 +1,7 @@
 package com.edestria.engine.guilds.services;
 
 import com.edestria.engine.EdestriaEngine;
-import com.edestria.engine.database.mongo.DataService;
+import com.edestria.engine.database.mongo.services.DataService;
 import com.edestria.engine.guilds.Guild;
 
 import java.util.TreeMap;
@@ -52,9 +52,4 @@ public class GuildService extends DataService<Guild, String> {
     public boolean exists(String name) {
         return this.edestriaEngine.getMongoRetrievalService().exists(GuildService.collection, new MongoDocumentEntry<>("name", name));
     }*/
-
-    @Override
-    public void purge() {
-        this.getData().clear();
-    }
 }

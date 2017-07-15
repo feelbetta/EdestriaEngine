@@ -5,28 +5,35 @@ import org.bukkit.ChatColor;
 
 public enum Rank {
 
-    DEFAULT("$7", false),
-    VIP("$b[VIP]", 4.99, false),
-    VIP_PLUS("$b[VIP+]", 8.99, false),
-    MOD("$d[MOD]", true),
-    OWNER("$4[OWNER]", true);
+    DEFAULT(5, "$7", false),
+    VIP(4, "$b[VIP]", 4.99, false),
+    VIP_PLUS(3, "$b[VIP+]", 8.99, false),
+    MOD(2, "$d[MOD]", true),
+    OWNER(1, "$4[OWNER]", true);
 
+    @Getter private final int priority;
     private final String prefix;
     @Getter private final double price;
     @Getter private final boolean staff;
 
-    Rank(String prefix, double price, boolean staff) {
+    Rank(int priority, String prefix, double price, boolean staff) {
+        this.priority = priority;
         this.prefix = prefix;
         this.price = price;
         this.staff = staff;
     }
 
-    Rank(String prefix, boolean staff) {
-        this(prefix, 0.00, staff);
+    Rank(int proiority, String prefix, boolean staff) {
+        this(proiority, prefix, 0.00, staff);
     }
 
     public String getPrefix() {
         return ChatColor.translateAlternateColorCodes('$', prefix);
+    }
+
+    public boolean isAtLeast(Rank rank) {
+        //Default.isAtLeast(Rank.OWNER);
+        return this.priority <= rank.getPriority();
     }
 
     @Override

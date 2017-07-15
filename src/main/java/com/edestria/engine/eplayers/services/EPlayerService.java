@@ -1,7 +1,7 @@
 package com.edestria.engine.eplayers.services;
 
 import com.edestria.engine.EdestriaEngine;
-import com.edestria.engine.database.mongo.DataService;
+import com.edestria.engine.database.mongo.services.DataService;
 import com.edestria.engine.eplayers.EPlayer;
 
 import java.util.HashMap;
@@ -54,9 +54,4 @@ public class EPlayerService extends DataService<EPlayer, UUID> {
         return this.edestriaEngine.getMongoRetrievalService().exists(EPlayerService.collection, new MongoDocumentEntry<>("uuid", uuid.toString()));
     }
 */
-
-    @Override
-    public void purge() {
-        this.getData().clear();
-    }
 }

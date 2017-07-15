@@ -1,6 +1,8 @@
 package com.edestria.engine.commands;
 
 import com.edestria.engine.EdestriaEngine;
+import com.edestria.engine.eplayers.EPlayer;
+import com.edestria.engine.ranks.Rank;
 import com.google.common.collect.Lists;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -9,8 +11,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.spigotmc.SpigotConfig;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -20,7 +22,7 @@ import java.util.HashMap;
 
 public abstract class ECommand extends ECommandInjector {
 
-    private final Plugin plugin;
+    private final EdestriaEngine edestriaEngine;
 
     private final static HashMap<Command, Object> handlers = new HashMap<>();
     private final static HashMap<Command, Method> methods = new HashMap<>();
@@ -32,34 +34,34 @@ public abstract class ECommand extends ECommandInjector {
      * Registers all command handlers and subcommand handlers in a class, matching them with their corresponding commands and subcommands registered to the specified plugin.
      */
 
-    public ECommand(Plugin plugin) {
+    public ECommand(EdestriaEngine edestriaEngine) {
         super("");
         registerCommands(JavaPlugin.getPlugin(EdestriaEngine.class), this);
-        this.plugin = plugin;
+        this.edestriaEngine = edestriaEngine;
     }
 
-    public abstract void perform(Player player, String[] args);
+    public abstract void perform(Player player, EPlayer ePlayer, String[] args);
 
     private void registerCommands(JavaPlugin plugin, Object handler) {
         for (Method method : handler.getClass().getMethods()) {
             Class<?>[] params = method.getParameterTypes();
-            if (params.length == 2 && CommandSender.class.isAssignableFrom(params[0]) && String[].class.equals(params[1])) {
+            if (params.length == 3 && CommandSender.class.isAssignableFrom(params[0]) && EPlayer.class.equals(params[1]) && String[].class.equals(params[2])) {
                 if (isCommandProperty(method)) {
 
                     CommandProperties annotation = method.getAnnotation(CommandProperties.class);
                     this.setName(annotation.name());
-                    if(((CraftServer) Bukkit.getServer()).getCommandMap().getCommands().stream().map(Command::getName).noneMatch(annotation.name()::equalsIgnoreCase)){
+                    if (((CraftServer) Bukkit.getServer()).getCommandMap().getCommands().stream().map(Command::getName).noneMatch(annotation.name()::equalsIgnoreCase)) {
                         ((CraftServer) Bukkit.getServer()).getCommandMap().register(JavaPlugin.getPlugin(EdestriaEngine.class).getName(), this);
-                        if(!(Arrays.equals(annotation.aliases(), new String[]{""})))
+                        if(!(Arrays.equals(annotation.aliases(), new String[]{""}))) {
                             setAliases(Lists.newArrayList(annotation.aliases()));
-                        if(!annotation.description().equals(""))
+                        }
+                        if(!annotation.description().equals("")) {
                             setDescription(annotation.description());
-                        if(!annotation.usage().equals(""))
+                        }
+                        if(!annotation.usage().equals("")) {
                             setUsage(annotation.usage());
-                        if(!annotation.permission().equals(""))
-                            setPermission(annotation.permission());
-                        if(!annotation.permissionMessage().equals(""))
-                            setPermissionMessage(ChatColor.RED + annotation.permissionMessage());
+                        }
+                        setRequiredRank(annotation.requiredRank());
                         handlers.put(this, handler);
                         methods.put(this, method);
                     }
@@ -88,6 +90,7 @@ public abstract class ECommand extends ECommandInjector {
      */
     @Retention(RetentionPolicy.RUNTIME)
     public @interface CommandProperties {
+
         String name();
 
         String[] aliases() default {""};
@@ -96,9 +99,7 @@ public abstract class ECommand extends ECommandInjector {
 
         String usage() default "";
 
-        String permission() default "";
-
-        String permissionMessage() default "You do not have permission to use that command";
+        Rank requiredRank() default Rank.DEFAULT;
     }
 
     /**
@@ -135,6 +136,7 @@ public abstract class ECommand extends ECommandInjector {
      * A class for representing subcommands
      */
     private static class SubCommand {
+
         public final Command superCommand;
         public final String subCommand;
         public String permission;
@@ -161,7 +163,6 @@ public abstract class ECommand extends ECommandInjector {
 
     @Override
     public boolean execute(CommandSender commandSender, String s, String[] strings) {
-        
         if (strings.length > 0) {
             /*
              * Get the subcommand given and the handler and method attached to it
@@ -187,7 +188,7 @@ public abstract class ECommand extends ECommandInjector {
                      * If the method requires a player and the subcommand wasn't sent by one, don't continue
                      */
                     if (subMethod.getParameterTypes()[0].equals(Player.class) && !(commandSender instanceof Player)) {
-                        commandSender.sendMessage(ChatColor.RED + "This command requires a player commandcommandSender");
+                        commandSender.sendMessage(ChatColor.RED + "This command requires a player commandSender");
                         return true;
                     }
                     /*
@@ -245,18 +246,20 @@ public abstract class ECommand extends ECommandInjector {
              * Try to process the command
              */
             try {
-                method.invoke(handler, commandSender, strings);
+                setEPlayer(this.edestriaEngine.getEPlayerService().retrieve("uuid", ((Player) commandSender).getUniqueId().toString(), ((Player) commandSender).getUniqueId()));
+                if (!this.getEPlayer().getRank().isAtLeast(this.getRequiredRank())) {
+                    Bukkit.broadcastMessage("Current: " + this.getEPlayer().getRank().toString());
+                    commandSender.sendMessage(org.bukkit.ChatColor.RED + "You must be at least " + this.getRequiredRank().toString() + " rank to do this.");
+                    return true;
+                }
+                method.invoke(handler, commandSender, this.getEPlayer(), strings);
             } catch (Exception e) {
                 commandSender.sendMessage(ChatColor.RED + "An error occurred while trying to process the command");
                 e.printStackTrace();
             }
+            return true;
         }
-        /*
-         * Otherwise we have to fake not recognising the command
-         */
-        else
-            commandSender.sendMessage("Unknown command. Type \"help\" for help. LOL");
-
+        commandSender.sendMessage(SpigotConfig.unknownCommandMessage);
         return true;
     }
 }

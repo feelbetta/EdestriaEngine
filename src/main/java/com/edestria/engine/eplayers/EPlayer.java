@@ -28,6 +28,5 @@ public class EPlayer {
     }
 
     public EPlayer() {
-        //this(UUID.fromString("f8170b78-b8ca-49ea-98f8-a9220d59924d"));
     }
 }

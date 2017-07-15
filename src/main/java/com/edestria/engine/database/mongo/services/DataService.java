@@ -1,17 +1,20 @@
-package com.edestria.engine.database.mongo;
+package com.edestria.engine.database.mongo.services;
 
 import com.edestria.engine.EdestriaEngine;
 import com.edestria.engine.Purgeable;
+import com.edestria.engine.database.mongo.MongoDocumentEntry;
+import com.edestria.engine.database.mongo.MongoDocumentIdentifier;
 import com.mongodb.client.MongoCollection;
 import lombok.Getter;
 import org.bson.Document;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Supplier;
 
-public abstract class DataService<Type, Identifier> implements Purgeable {
+public class DataService<Type, Identifier> implements Purgeable {
 
     @Getter private final Map<Identifier, Type> data;
 
@@ -32,12 +35,14 @@ public abstract class DataService<Type, Identifier> implements Purgeable {
     @SuppressWarnings("unchecked")
     public Type retrieve(String key, Object value, Identifier identifier) {
         if (this.data.containsKey(identifier)) {
+            System.out.println("IS IN HASHMAP");
             return this.data.get(identifier);
         }
         MongoDocumentIdentifier mongoDocumentIdentifier = new MongoDocumentIdentifier<>(key, value);
         Type typeObject = typeSupplier.get();
         if (!this.exists(this.mongoCollection, mongoDocumentIdentifier)) {
             try {
+                System.out.println("NOT IN DATABASE, CREATE A NEW INSTANCE OF CLASS.");
                 return (Type) Arrays.stream(typeSupplier.get().getClass().getConstructors()).filter(constructor -> constructor.getParameters().length == 1).findFirst().orElse(null).newInstance(identifier);
                 /*
                 *
@@ -48,6 +53,7 @@ public abstract class DataService<Type, Identifier> implements Purgeable {
                 exception.printStackTrace();
             }
         }
+        System.out.println("FETCHING FROM DATABASE.");
         Document document = this.edestriaEngine.getMongoRetrievalService().get(this.mongoCollection, mongoDocumentIdentifier);
         typeObject = this.edestriaEngine.getGsonService().deserialize(document.toJson(), typeSupplier.get().getClass());
         return typeObject;
@@ -73,9 +79,15 @@ public abstract class DataService<Type, Identifier> implements Purgeable {
     }
 
     public boolean exists(MongoCollection mongoCollection, MongoDocumentIdentifier mongoDocumentIdentifier) {
-        return this.edestriaEngine.getMongoRetrievalService().exists(mongoCollection, new MongoDocumentEntry<>(mongoDocumentIdentifier.getIdentifier(), mongoDocumentIdentifier.getIdentifier()));
+        System.out.println("IDENTIFIER: " + mongoDocumentIdentifier.getIdentifier());
+        System.out.println("IDENTIFIER VALUE: " + mongoDocumentIdentifier.getIdentifierValue());
+        return this.edestriaEngine.getMongoRetrievalService().exists(mongoCollection, new MongoDocumentEntry<>(mongoDocumentIdentifier.getIdentifier(), mongoDocumentIdentifier.getIdentifierValue()));
     }
 
+    @Override
+    public void purge() {
+        this.data.clear();
+    }
 
     /*
     *

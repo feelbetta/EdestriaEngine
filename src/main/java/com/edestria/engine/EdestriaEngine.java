@@ -54,6 +54,7 @@ public class EdestriaEngine extends JavaPlugin {
         this.registerFiles();
         this.reigsterConnections();
         this.registerServices();
+        new TestCommand(this);
     }
 
     @Override
