@@ -15,6 +15,10 @@ public class Guild {
     private UUID leader;
     private Set<UUID> members = new HashSet<>();
 
+    public Guild() {
+
+    }
+
     public Guild(String name) {
         this.name = name;
     }

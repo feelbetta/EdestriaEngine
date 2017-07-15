@@ -9,7 +9,7 @@ import java.util.TreeMap;
 public class GuildService extends DataService<Guild, String> {
 
     public GuildService(EdestriaEngine edestriaEngine) {
-        super(edestriaEngine, edestriaEngine.getMongoConnection().getActiveCollection("guilds"), new TreeMap<>(String.CASE_INSENSITIVE_ORDER));
+        super(edestriaEngine, edestriaEngine.getMongoConnection().getActiveCollection("guilds"), new TreeMap<>(String.CASE_INSENSITIVE_ORDER), Guild::new);
 
     }
 

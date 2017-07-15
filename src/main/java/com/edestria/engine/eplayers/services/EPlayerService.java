@@ -10,7 +10,7 @@ import java.util.UUID;
 public class EPlayerService extends DataService<EPlayer, UUID> {
 
     public EPlayerService(EdestriaEngine edestriaEngine) {
-        super(edestriaEngine, edestriaEngine.getMongoConnection().getActiveCollection("eplayers"), new HashMap<>());
+        super(edestriaEngine, edestriaEngine.getMongoConnection().getActiveCollection("eplayers"), new HashMap<>(), EPlayer::new);
     }
 
 /*

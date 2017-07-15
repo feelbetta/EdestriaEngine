@@ -20,7 +20,7 @@ public class GSONService {
     public String serialize(Object object) {
         return gson.toJson(object);
     }
-    public <T> T deserialize(String jsonString, Class<T> clazz) {
-        return gson.fromJson(jsonString, clazz);
+    public <T> T deserialize(String jsonString, Class<?> clazz) {
+        return (T) gson.fromJson(jsonString, clazz);
     }
 }
