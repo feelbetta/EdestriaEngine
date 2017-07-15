@@ -1,5 +1,6 @@
 package com.edestria.engine;
 
+import com.edestria.engine.commands.EFLSEF;
 import com.edestria.engine.database.mongo.connection.MongoConnection;
 import com.edestria.engine.database.mongo.services.MongoRetrievalService;
 import com.edestria.engine.database.mongo.services.MongoUpsertService;
@@ -54,7 +55,7 @@ public class EdestriaEngine extends JavaPlugin {
         this.registerFiles();
         this.reigsterConnections();
         this.registerServices();
-        new TestCommand(this);
+        new EFLSEF(this);
     }
 
     @Override

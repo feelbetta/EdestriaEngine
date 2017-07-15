@@ -6,8 +6,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-class ECommandInjector extends Command {
+abstract class ECommandInjector extends Command {
+
+    public interface ECommandFormat {
+
+        void perform(Player player, EPlayer ePlayer, String[] args);
+    }
 
     @Getter @Setter private Rank requiredRank;
     @Getter @Setter private EPlayer ePlayer;

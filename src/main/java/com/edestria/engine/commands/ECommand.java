@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public abstract class ECommand extends ECommandInjector {
+public abstract class ECommand extends ECommandInjector implements ECommandInjector.ECommandFormat {
 
     private final EdestriaEngine edestriaEngine;
 
@@ -39,8 +39,6 @@ public abstract class ECommand extends ECommandInjector {
         registerCommands(JavaPlugin.getPlugin(EdestriaEngine.class), this);
         this.edestriaEngine = edestriaEngine;
     }
-
-    public abstract void perform(Player player, EPlayer ePlayer, String[] args);
 
     private void registerCommands(JavaPlugin plugin, Object handler) {
         for (Method method : handler.getClass().getMethods()) {
