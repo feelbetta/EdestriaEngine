@@ -28,9 +28,6 @@ public class Guild {
         if (obj.equals(this)) {
             return true;
         }
-        if (!(obj instanceof Guild)) {
-            return false;
-        }
-        return ((Guild) obj).getName().equals(this.getName());
+        return obj instanceof Guild && ((Guild) obj).getName().equals(this.getName());
     }
 }

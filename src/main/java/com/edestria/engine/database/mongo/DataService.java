@@ -8,10 +8,7 @@ import org.bson.Document;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Supplier;
 
 public abstract class DataService<Type, Identifier> implements Purgeable {
@@ -32,27 +29,28 @@ public abstract class DataService<Type, Identifier> implements Purgeable {
         this.typeSupplier = Objects.requireNonNull(typeSupplier);
     }
 
+    @SuppressWarnings("unchecked")
     public Type retrieve(String key, Object value, Identifier identifier) {
         if (this.data.containsKey(identifier)) {
-            return (Type) this.data.get(identifier);
+            return this.data.get(identifier);
         }
         MongoDocumentIdentifier mongoDocumentIdentifier = new MongoDocumentIdentifier<>(key, value);
         Type typeObject = typeSupplier.get();
         if (!this.exists(this.mongoCollection, mongoDocumentIdentifier)) {
             try {
-                return (Type) typeSupplier.get().getClass().getConstructor(UUID.class).newInstance(identifier);
+                return (Type) Arrays.stream(typeSupplier.get().getClass().getConstructors()).filter(constructor -> constructor.getParameters().length > 0).findFirst().orElse(null).newInstance(identifier);
                 /*
                 *
-                * Find way to grab constructor argument.
+                * Find better way to grab constructor argument.
                 * Otherwise, switch to full UUIDs ??
                 * */
-            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException exception) {
+            } catch (IllegalAccessException | InstantiationException | InvocationTargetException exception) {
                 exception.printStackTrace();
             }
         }
         Document document = this.edestriaEngine.getMongoRetrievalService().get(this.mongoCollection, mongoDocumentIdentifier);
         typeObject = this.edestriaEngine.getGsonService().deserialize(document.toJson(), typeSupplier.get().getClass());
-        return (Type) typeObject;
+        return typeObject;
 
     }
 
@@ -80,9 +78,7 @@ public abstract class DataService<Type, Identifier> implements Purgeable {
 
     private String getValueType(Map map){
         String valueKind = Object.class.getName();
-        Iterator<Map.Entry<Object,Object>> it = map.entrySet().iterator();
-        while(it.hasNext()){
-            Map.Entry<Object,Object> entry = it.next();
+        for (Map.Entry<Object, Object> entry : (Iterable<Map.Entry<Object, Object>>) map.entrySet()) {
             Object entryVal = entry.getValue();
             valueKind = entryVal.getClass().getName();
         }
