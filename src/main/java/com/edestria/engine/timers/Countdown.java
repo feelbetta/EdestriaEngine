@@ -49,7 +49,7 @@ public class Countdown extends Timer<Countdown> {
 
     @Override
     public String getElapsedTimeReadable() {
-        return DurationFormatUtils.formatDuration(this.elapsed, "HH:mm:ss");
+        return DurationFormatUtils.formatDuration(this.elapsed, Timer.TIME_FORMAT);
     }
 
     public long getTimeLeft() {
@@ -57,6 +57,6 @@ public class Countdown extends Timer<Countdown> {
     }
 
     public String getTimeLeftReadable() {
-        return DurationFormatUtils.formatDuration(this.start - this.elapsed, "HH:mm:ss");
+        return DurationFormatUtils.formatDuration(this.start - this.elapsed, Timer.TIME_FORMAT);
     }
 }

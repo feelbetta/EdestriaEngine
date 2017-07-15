@@ -17,6 +17,8 @@ public abstract class Timer<T> {
 
     @Setter private TimerCompletion timerCompletion;
 
+    public static final String TIME_FORMAT = "HH:mm:ss";
+
     public Timer(String name, EdestriaEngine edestriaEngine) {
         this.name = name;
         this.edestriaEngine = edestriaEngine;

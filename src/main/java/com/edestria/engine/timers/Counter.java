@@ -31,7 +31,7 @@ public class Counter extends Timer<Counter> {
 
     @Override
     public String getElapsedTimeReadable() {
-        return DurationFormatUtils.formatDuration(this.stopWatch.getTime(), "HH:mm:ss");
+        return DurationFormatUtils.formatDuration(this.stopWatch.getTime(), Timer.TIME_FORMAT);
     }
 
     public void pause() {

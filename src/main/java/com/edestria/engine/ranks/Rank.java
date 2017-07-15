@@ -23,8 +23,8 @@ public enum Rank {
         this.staff = staff;
     }
 
-    Rank(int proiority, String prefix, boolean staff) {
-        this(proiority, prefix, 0.00, staff);
+    Rank(int priority, String prefix, boolean staff) {
+        this(priority, prefix, 0.00, staff);
     }
 
     public String getPrefix() {
@@ -32,7 +32,6 @@ public enum Rank {
     }
 
     public boolean isAtLeast(Rank rank) {
-        //Default.isAtLeast(Rank.OWNER);
         return this.priority <= rank.getPriority();
     }
 
