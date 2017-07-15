@@ -6,9 +6,12 @@ import com.mongodb.client.MongoCollection;
 import lombok.Getter;
 import org.bson.Document;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public abstract class DataService<Type, Identifier> implements Purgeable {
@@ -18,7 +21,7 @@ public abstract class DataService<Type, Identifier> implements Purgeable {
     private final EdestriaEngine edestriaEngine;
     private final MongoCollection mongoCollection;
 
-    private final Supplier<? extends Type> ctor;
+    private final Supplier<? extends Type> typeSupplier;
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMMM d y hh:mm a z");
 
@@ -26,7 +29,7 @@ public abstract class DataService<Type, Identifier> implements Purgeable {
         this.edestriaEngine = edestriaEngine;
         this.mongoCollection = mongoCollection;
         this.data = data;
-        this.ctor = Objects.requireNonNull(typeSupplier);
+        this.typeSupplier = Objects.requireNonNull(typeSupplier);
     }
 
     public Type retrieve(String key, Object value, Identifier identifier) {
@@ -34,21 +37,23 @@ public abstract class DataService<Type, Identifier> implements Purgeable {
             return (Type) this.data.get(identifier);
         }
         MongoDocumentIdentifier mongoDocumentIdentifier = new MongoDocumentIdentifier<>(key, value);
-        Type type = ctor.get();
+        Type typeObject = typeSupplier.get();
         if (!this.exists(this.mongoCollection, mongoDocumentIdentifier)) {
-            return ctor.get();
+            try {
+                return (Type) typeSupplier.get().getClass().getConstructor(UUID.class).newInstance(identifier);
+                /*
+                *
+                * Find way to grab constructor argument.
+                * Otherwise, switch to full UUIDs ??
+                *
+                * */
+            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException exception) {
+                exception.printStackTrace();
+            }
         }
         Document document = this.edestriaEngine.getMongoRetrievalService().get(this.mongoCollection, mongoDocumentIdentifier);
-        if (document == null) {
-            System.out.println("------------------- DOCUMENT IS NULL ----------------");
-            return (Type) type;
-        }
-        if (type == null) {
-            System.out.println("------------------- TYPE IS NULL ----------------");
-            return (Type) type;
-        }
-        type = this.edestriaEngine.getGsonService().deserialize(document.toJson(), ctor.get().getClass());
-        return (Type) type;
+        typeObject = this.edestriaEngine.getGsonService().deserialize(document.toJson(), typeSupplier.get().getClass());
+        return (Type) typeObject;
 
     }
 
@@ -72,5 +77,16 @@ public abstract class DataService<Type, Identifier> implements Purgeable {
 
     public boolean exists(MongoCollection mongoCollection, MongoDocumentIdentifier mongoDocumentIdentifier) {
         return this.edestriaEngine.getMongoRetrievalService().exists(mongoCollection, new MongoDocumentEntry<>(mongoDocumentIdentifier.getIdentifier(), mongoDocumentIdentifier.getIdentifier()));
+    }
+
+    private String getValueType(Map map){
+        String valueKind = Object.class.getName();
+        Iterator<Map.Entry<Object,Object>> it = map.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry<Object,Object> entry = it.next();
+            Object entryVal = entry.getValue();
+            valueKind = entryVal.getClass().getName();
+        }
+        return valueKind;
     }
 }
