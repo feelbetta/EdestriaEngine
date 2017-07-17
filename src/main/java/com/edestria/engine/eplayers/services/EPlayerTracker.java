@@ -1,16 +1,16 @@
 package com.edestria.engine.eplayers.services;
 
 import com.edestria.engine.EdestriaEngine;
-import com.edestria.engine.database.mongo.services.DataService;
+import com.edestria.engine.database.mongo.trackers.DataTracker;
 import com.edestria.engine.eplayers.EPlayer;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class EPlayerService extends DataService<EPlayer, UUID> {
+public class EPlayerTracker extends DataTracker<EPlayer, UUID> {
 
-    public EPlayerService(EdestriaEngine edestriaEngine) {
-        super(edestriaEngine, edestriaEngine.getMongoConnection().getActiveCollection("eplayers"), new HashMap<>(), EPlayer::new);
+    public EPlayerTracker(EdestriaEngine edestriaEngine) {
+        super(edestriaEngine, "uuid", edestriaEngine.getMongoConnection().getActiveCollection("eplayers"), new HashMap<>(), EPlayer::new);
     }
 
 /*
@@ -23,7 +23,7 @@ public class EPlayerService extends DataService<EPlayer, UUID> {
         if (!this.exists(uuid)) {
             return ePlayer;
         }
-        Document document = this.edestriaEngine.getMongoRetrievalService().get(EPlayerService.collection, new MongoDocumentIdentifier<>("uuid", uuid.toString()));
+        Document document = this.edestriaEngine.getMongoRetrievalService().get(EPlayerTracker.collection, new MongoDocumentIdentifier<>("uuid", uuid.toString()));
         ePlayer = this.edestriaEngine.getGsonService().deserialize(document.toJson(), EPlayer.class);
         return ePlayer;
     }
@@ -33,7 +33,7 @@ public class EPlayerService extends DataService<EPlayer, UUID> {
         Document document = Document.parse(this.edestriaEngine.getGsonService().serialize(ePlayer));
         System.out.println(document);
         this.edestriaEngine.getMongoUpsertService()
-                .append(EPlayerService.collection,
+                .append(EPlayerTracker.collection,
                         new MongoDocumentIdentifier<>("uuid", document.getString("uuid")),
                         document)
                 .push();
@@ -51,7 +51,7 @@ public class EPlayerService extends DataService<EPlayer, UUID> {
 
     @Override
     public boolean exists(UUID uuid) {
-        return this.edestriaEngine.getMongoRetrievalService().exists(EPlayerService.collection, new MongoDocumentEntry<>("uuid", uuid.toString()));
+        return this.edestriaEngine.getMongoRetrievalService().exists(EPlayerTracker.collection, new MongoDocumentEntry<>("uuid", uuid.toString()));
     }
 */
 }

@@ -1,4 +1,4 @@
-package com.edestria.engine.database.mongo.services;
+package com.edestria.engine.database.mongo.trackers;
 
 import com.edestria.engine.EdestriaEngine;
 import com.edestria.engine.Purgeable;
@@ -14,19 +14,23 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class DataService<Type, Identifier> implements Purgeable {
+public class DataTracker<Type, Identifier> implements Purgeable {
 
     @Getter private final Map<Identifier, Type> data;
 
     private final EdestriaEngine edestriaEngine;
+
+    private final String keyIdentifier;
+
     private final MongoCollection mongoCollection;
 
     private final Supplier<? extends Type> typeSupplier;
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMMM d y hh:mm a z");
 
-    public DataService(EdestriaEngine edestriaEngine, MongoCollection mongoCollection, Map<Identifier, Type> data, Supplier<? extends Type> typeSupplier) {
+    public DataTracker(EdestriaEngine edestriaEngine, String keyIdentifier, MongoCollection mongoCollection, Map<Identifier, Type> data, Supplier<? extends Type> typeSupplier) {
         this.edestriaEngine = edestriaEngine;
+        this.keyIdentifier = keyIdentifier;
         this.mongoCollection = mongoCollection;
         this.data = data;
         this.typeSupplier = Objects.requireNonNull(typeSupplier);

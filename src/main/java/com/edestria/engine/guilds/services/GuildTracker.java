@@ -1,15 +1,15 @@
 package com.edestria.engine.guilds.services;
 
 import com.edestria.engine.EdestriaEngine;
-import com.edestria.engine.database.mongo.services.DataService;
+import com.edestria.engine.database.mongo.trackers.DataTracker;
 import com.edestria.engine.guilds.Guild;
 
 import java.util.TreeMap;
 
-public class GuildService extends DataService<Guild, String> {
+public class GuildTracker extends DataTracker<Guild, String> {
 
-    public GuildService(EdestriaEngine edestriaEngine) {
-        super(edestriaEngine, edestriaEngine.getMongoConnection().getActiveCollection("guilds"), new TreeMap<>(String.CASE_INSENSITIVE_ORDER), Guild::new);
+    public GuildTracker(EdestriaEngine edestriaEngine) {
+        super(edestriaEngine, "name", edestriaEngine.getMongoConnection().getActiveCollection("guilds"), new TreeMap<>(String.CASE_INSENSITIVE_ORDER), Guild::new);
 
     }
 
@@ -22,7 +22,7 @@ public class GuildService extends DataService<Guild, String> {
         if (!this.exists(name)) {
             return guild;
         }
-        Document document = this.edestriaEngine.getMongoRetrievalService().get(GuildService.collection, new MongoDocumentIdentifier<>("name", name));
+        Document document = this.edestriaEngine.getMongoRetrievalService().get(GuildTracker.collection, new MongoDocumentIdentifier<>("name", name));
         guild = this.edestriaEngine.getGsonService().deserialize(document.toJson(), Guild.class);
         return guild;
     }
@@ -32,7 +32,7 @@ public class GuildService extends DataService<Guild, String> {
         Document document = Document.parse(this.edestriaEngine.getGsonService().serialize(guild));
         System.out.println(document);
         this.edestriaEngine.getMongoUpsertService()
-                .append(GuildService.collection,
+                .append(GuildTracker.collection,
                         new MongoDocumentIdentifier<>("name", document.getString("name")),
                         document)
                 .push();
@@ -50,6 +50,6 @@ public class GuildService extends DataService<Guild, String> {
 
     @Override
     public boolean exists(String name) {
-        return this.edestriaEngine.getMongoRetrievalService().exists(GuildService.collection, new MongoDocumentEntry<>("name", name));
+        return this.edestriaEngine.getMongoRetrievalService().exists(GuildTracker.collection, new MongoDocumentEntry<>("name", name));
     }*/
 }

@@ -4,7 +4,8 @@ import com.edestria.engine.commands.EFLSEF;
 import com.edestria.engine.database.mongo.connection.MongoConnection;
 import com.edestria.engine.database.mongo.services.MongoRetrievalService;
 import com.edestria.engine.database.mongo.services.MongoUpsertService;
-import com.edestria.engine.eplayers.services.EPlayerService;
+import com.edestria.engine.display.holograms.services.HologramTracker;
+import com.edestria.engine.eplayers.services.EPlayerTracker;
 import com.edestria.engine.files.EngineFiles;
 import com.edestria.engine.gson.services.GSONService;
 import com.edestria.engine.logging.EngineLogger;
@@ -47,7 +48,12 @@ public class EdestriaEngine extends JavaPlugin {
     /*
     * EPlayer Services
     * */
-    @Getter private EPlayerService ePlayerService;
+    @Getter private EPlayerTracker ePlayerService;
+
+    /*
+    * Hologram Services
+    * */
+    @Getter private HologramTracker hologramTracker;
 
     @Override
     public void onEnable() {
@@ -85,7 +91,8 @@ public class EdestriaEngine extends JavaPlugin {
         this.mongoRetrievalService = new MongoRetrievalService(this);
         this.mongoUpsertService = new MongoUpsertService(this);
         this.timerService = new TimerService(this);
-        this.ePlayerService = new EPlayerService(this);
+        this.ePlayerService = new EPlayerTracker(this);
+        this.hologramTracker = new HologramTracker(this);
         this.gsonService = new GSONService(this);
     }
 

@@ -36,7 +36,7 @@ public class GuildTypeAdapter implements JsonSerializer<Guild>, JsonDeserializer
         Guild guild = new Guild(jsonElement.getAsJsonObject().get("name").getAsString());
         guild.setCreated(jsonElement.getAsJsonObject().get("created").getAsString());
         guild.setLeader(UUID.fromString(jsonElement.getAsJsonObject().get("leader").getAsString()));
-        guild.setMembers(gsonService.getGson().fromJson(jsonElement.getAsJsonObject().get("members").getAsJsonObject().toString(), HashSet.class));
+        guild.setMembers(this.gsonService.getGson().fromJson(jsonElement.getAsJsonObject().get("members").getAsJsonObject().toString(), HashSet.class));
         return guild;
     }
 }
