@@ -17,6 +17,10 @@ import java.util.stream.Collectors;
 
 public class EItem extends ItemStack {
 
+    public EItem(ItemStack itemStack) {
+        super(itemStack);
+    }
+
     public EItem(Material material) {
         super(material);
     }
@@ -53,7 +57,7 @@ public class EItem extends ItemStack {
         return this;
     }
 
-    public EItem color(Color color) {
+    public EItem withArmorColor(Color color) {
         if (!this.getType().name().toLowerCase().contains("leather_")) {
             return this;
         }
@@ -64,9 +68,18 @@ public class EItem extends ItemStack {
         return this;
     }
 
+    public EItem withPotionColor(Color color) {
+        if (!this.getType().name().toLowerCase().contains("potion")) {
+            return this;
+        }
+        PotionMeta potionMeta = (PotionMeta) this.getItemMeta();
+        potionMeta.setColor(color);
+        this.setItemMeta(potionMeta);
+        return this;
+    }
+
     public EItem withPotionEffect(PotionEffect... potionEffects) {
         if (!this.getType().name().toLowerCase().contains("potion")) {
-            Bukkit.broadcastMessage("no");
             return this;
         }
         PotionMeta potionMeta = (PotionMeta) this.getItemMeta();

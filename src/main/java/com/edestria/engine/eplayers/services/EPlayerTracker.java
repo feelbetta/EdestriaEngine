@@ -1,7 +1,7 @@
 package com.edestria.engine.eplayers.services;
 
 import com.edestria.engine.EdestriaEngine;
-import com.edestria.engine.database.mongo.trackers.DataTracker;
+import com.edestria.engine.data.DataTracker;
 import com.edestria.engine.eplayers.EPlayer;
 
 import java.util.HashMap;

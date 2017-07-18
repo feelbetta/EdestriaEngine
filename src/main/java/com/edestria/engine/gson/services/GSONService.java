@@ -1,7 +1,7 @@
 package com.edestria.engine.gson.services;
 
 import com.edestria.engine.EdestriaEngine;
-import com.edestria.engine.database.mongo.adapters.HologramTypeAdapter;
+import com.edestria.engine.database.mongo.adapters.GuildTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
@@ -14,8 +14,7 @@ public class GSONService {
 
     public GSONService(EdestriaEngine edestriaEngine) {
         this.edestriaEngine = edestriaEngine;
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
-        //this.gson = new GsonBuilder().registerTypeAdapter(HologramTypeAdapter.class, new HologramTypeAdapter(this.edestriaEngine.getGsonService())).setPrettyPrinting().create();
+        this.gson = new GsonBuilder().registerTypeAdapter(GuildTypeAdapter.class, new GuildTypeAdapter(this.edestriaEngine.getGsonService())).setPrettyPrinting().create();
     }
 
     public String serialize(Object object) {
