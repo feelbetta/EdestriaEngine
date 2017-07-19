@@ -11,11 +11,11 @@ import org.bukkit.Sound;
 
 public class ShopMenu extends Menu {
 
-    public static final MessageSound PURCHASE_SUCCESSFUL_SOUND = new MessageSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
-    public static final MessageSound PURCHASE_UNSUCCESSFUL_SOUND = new MessageSound(Sound.BLOCK_ANVIL_PLACE);
+    private static final MessageSound PURCHASE_SUCCESSFUL_SOUND = new MessageSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
+    private static final MessageSound PURCHASE_UNSUCCESSFUL_SOUND = new MessageSound(Sound.BLOCK_ANVIL_PLACE);
 
-    public static final String PURCHASE_SUCCESSFUL_MESSAGE = "$eYou purchased $6%s.";
-    public static final String PURCHASE_UNSUCCESSFUL_MESSAGE = "$cYou do not have enough gold to purchase this!";
+    private static final String PURCHASE_SUCCESSFUL_MESSAGE = "$eYou purchased $6%s.";
+    private static final String PURCHASE_UNSUCCESSFUL_MESSAGE = "$cYou do not have enough gold to purchase this!";
 
     @Getter
     public abstract class ShopItem extends MenuItem {

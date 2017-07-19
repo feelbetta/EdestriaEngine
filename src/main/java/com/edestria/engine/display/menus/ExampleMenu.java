@@ -11,7 +11,7 @@ public class ExampleMenu extends Menu {
 
     public ExampleMenu(EdestriaEngine edestriaEngine) {
         super("Example", Rows.SIX);
-        this.addMenuItem(Rows.ONE, 1, new MenuItem(new EItem(Material.DIAMOND).withName("$e%name%'s Statistics").withLore("$fYou have: $6%gold% Gold")) {
+        this.addMenuItem(Rows.ONE, 1, new MenuItem(new EItem(Material.DIAMOND).withName("$e%name%'s Statistics").withLore("$fYou have: $6%gold% Gold", "$fYour guild is: $d%guild%")) {
             @Override
             public void onClick(EPlayer ePlayer) {
 

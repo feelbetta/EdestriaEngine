@@ -101,11 +101,11 @@ public abstract class Menu {
     }
 
     private List<String> updatePlaceholders(EPlayer ePlayer, List<String> strings) {
-        return strings.stream().map(s -> s.replace("%gold%", ePlayer.getGold() + "").replace("%name%", ePlayer.getBukkitPlayer().get().getName()).replace("%rank%", ePlayer.getRank().toString()).replace("%guild%", ePlayer.getGuild())).collect(Collectors.toList());
+        return strings.stream().map(s -> s.replace("%gold%", ePlayer.getGold() + "").replace("%name%", ePlayer.getName()).replace("%rank%", ePlayer.getRank().toString()).replace("%guild%", ePlayer.getGuild())).collect(Collectors.toList());
     }
 
     private String updatePlaceholders(EPlayer ePlayer, String string) {
-        return string.replace("%gold%", ePlayer.getGold() + "").replace("%name%", ePlayer.getBukkitPlayer().get().getName()).replace("%rank%", ePlayer.getRank().toString()).replace("%guild%", ePlayer.getGuild());
+        return string.replace("%gold%", ePlayer.getGold() + "").replace("%name%", ePlayer.getName()).replace("%rank%", ePlayer.getRank().toString()).replace("%guild%", ePlayer.getGuild());
     }
 
     @Override

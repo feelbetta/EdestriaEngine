@@ -18,6 +18,7 @@ import java.util.*;
 public class EPlayer {
 
     private UUID uuid;
+    private String name;
     private Rank rank;
 
     private String lastLogin;
