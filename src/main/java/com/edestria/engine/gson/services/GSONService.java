@@ -2,9 +2,12 @@ package com.edestria.engine.gson.services;
 
 import com.edestria.engine.EdestriaEngine;
 import com.edestria.engine.database.mongo.adapters.GuildTypeAdapter;
+import com.edestria.engine.database.mongo.adapters.UUIDTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
+
+import java.util.UUID;
 
 public class GSONService {
 
@@ -14,7 +17,7 @@ public class GSONService {
 
     public GSONService(EdestriaEngine edestriaEngine) {
         this.edestriaEngine = edestriaEngine;
-        this.gson = new GsonBuilder().registerTypeAdapter(GuildTypeAdapter.class, new GuildTypeAdapter(this.edestriaEngine.getGsonService())).setPrettyPrinting().create();
+        this.gson = new GsonBuilder().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).registerTypeAdapter(GuildTypeAdapter.class, new GuildTypeAdapter(this.edestriaEngine.getGsonService())).setPrettyPrinting().create();
     }
 
     public String serialize(Object object) {

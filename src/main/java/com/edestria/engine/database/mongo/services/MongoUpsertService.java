@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.UUID;
 
 public class MongoUpsertService implements Purgeable {
 
@@ -32,18 +31,12 @@ public class MongoUpsertService implements Purgeable {
     }
 
     public MongoUpsertService append(MongoCollection mongoCollection, MongoDocumentIdentifier mongoDocumentIdentifier, MongoDocumentEntry... mongoDocumentEntries) {
-        this.executions.add(() -> {
-            System.out.println("Executed on Thread: " + Thread.currentThread().getName() + " (" + Thread.currentThread().getId() + ")");
-            Arrays.stream(mongoDocumentEntries).forEach(mongoDocumentEntry -> mongoCollection.updateOne(Filters.eq((String) mongoDocumentIdentifier.getIdentifier(), mongoDocumentIdentifier.getIdentifierValue()), new Document("$set", new Document((String) mongoDocumentEntry.getKey(), mongoDocumentEntry.getValue())), new UpdateOptions().upsert(true)));
-        });
+        this.executions.add(() -> Arrays.stream(mongoDocumentEntries).forEach(mongoDocumentEntry -> mongoCollection.updateOne(Filters.eq((String) mongoDocumentIdentifier.getIdentifier(), mongoDocumentIdentifier.getIdentifierValue()), new Document("$set", new Document((String) mongoDocumentEntry.getKey(), mongoDocumentEntry.getValue())), new UpdateOptions().upsert(true))));
         return this;
     }
 
     public MongoUpsertService append(MongoCollection mongoCollection, MongoDocumentIdentifier mongoDocumentIdentifier, Document document) {
-        this.executions.add(() -> {
-            System.out.println("Executed on Thread: " + Thread.currentThread().getName() + " (" + Thread.currentThread().getId() + ")");
-            mongoCollection.replaceOne(Filters.eq((String) mongoDocumentIdentifier.getIdentifier(), mongoDocumentIdentifier.getIdentifierValue() instanceof UUID ?  mongoDocumentIdentifier.getIdentifierValue().toString() :  mongoDocumentIdentifier.getIdentifierValue()), document, new UpdateOptions().upsert(true));
-        });
+        this.executions.add(() -> mongoCollection.replaceOne(Filters.eq((String) mongoDocumentIdentifier.getIdentifier(), mongoDocumentIdentifier.getIdentifierValue()), document, new UpdateOptions().upsert(true)));
         return this;
     }
 

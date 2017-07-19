@@ -38,14 +38,12 @@ public class DataTracker<Type, Identifier> implements Purgeable {
     @SuppressWarnings("unchecked")
     public Type retrieve(String key, Object value, Identifier identifier) {
         if (this.data.containsKey(identifier)) {
-            System.out.println("IS IN HASHMAP");
             return this.data.get(identifier);
         }
         MongoDocumentIdentifier mongoDocumentIdentifier = new MongoDocumentIdentifier<>(key, value);
         Type typeObject = typeSupplier.get();
         if (!this.exists(this.mongoCollection, mongoDocumentIdentifier)) {
             try {
-                System.out.println("NOT IN DATABASE, CREATE A NEW INSTANCE OF CLASS.");
                 return (Type) Arrays.stream(typeSupplier.get().getClass().getConstructors()).filter(constructor -> constructor.getParameters().length == 1).findFirst().orElse(null).newInstance(identifier);
                 /*
                 *
@@ -56,7 +54,6 @@ public class DataTracker<Type, Identifier> implements Purgeable {
                 exception.printStackTrace();
             }
         }
-        System.out.println("FETCHING FROM DATABASE.");
         Document document = this.edestriaEngine.getMongoRetrievalService().get(this.mongoCollection, mongoDocumentIdentifier);
         typeObject = this.edestriaEngine.getGsonService().deserialize(document.toJson(), typeSupplier.get().getClass());
         return typeObject;

@@ -3,55 +3,38 @@ package com.edestria.engine.eplayers.services;
 import com.edestria.engine.EdestriaEngine;
 import com.edestria.engine.data.DataTracker;
 import com.edestria.engine.eplayers.EPlayer;
+import com.edestria.engine.utils.time.Time;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class EPlayerTracker extends DataTracker<EPlayer, UUID> {
+public class EPlayerTracker extends DataTracker<EPlayer, UUID> implements Listener {
 
     public EPlayerTracker(EdestriaEngine edestriaEngine) {
         super(edestriaEngine, "uuid", edestriaEngine.getMongoConnection().getActiveCollection("eplayers"), new HashMap<>(), EPlayer::new);
+        Bukkit.getServer().getPluginManager().registerEvents(this, edestriaEngine);
     }
 
-/*
-    @Override
-    public EPlayer retrieve(UUID uuid) {
-        if (this.eplayers.containsKey(uuid)) {
-            return this.eplayers.get(uuid);
-        }
-        EPlayer ePlayer = new EPlayer(uuid);
-        if (!this.exists(uuid)) {
-            return ePlayer;
-        }
-        Document document = this.edestriaEngine.getMongoRetrievalService().get(EPlayerTracker.collection, new MongoDocumentIdentifier<>("uuid", uuid.toString()));
-        ePlayer = this.edestriaEngine.getGsonService().deserialize(document.toJson(), EPlayer.class);
-        return ePlayer;
+    @EventHandler
+    public void onLogin(PlayerLoginEvent event) {
+        EPlayer ePlayer = this.retrieve("uuid", event.getPlayer().getUniqueId().toString(), event.getPlayer().getUniqueId());
+        ePlayer.setLastLogin(Time.formatDate(new Date()));
+        ePlayer.setName(event.getPlayer().getName());
+        this.store(event.getPlayer().getUniqueId(), ePlayer);
     }
 
-    @Override
-    public void update(EPlayer ePlayer) {
-        Document document = Document.parse(this.edestriaEngine.getGsonService().serialize(ePlayer));
-        System.out.println(document);
-        this.edestriaEngine.getMongoUpsertService()
-                .append(EPlayerTracker.collection,
-                        new MongoDocumentIdentifier<>("uuid", document.getString("uuid")),
-                        document)
-                .push();
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        EPlayer ePlayer = this.retrieve("uuid", event.getPlayer().getUniqueId().toString(), event.getPlayer().getUniqueId());
+        this.update("uuid", ePlayer);
+        this.unstore(event.getPlayer().getUniqueId());
+        System.out.println("Stored size: " + this.getData().size());
     }
 
-    @Override
-    public void store(EPlayer ePlayer) {
-        this.eplayers.put(ePlayer.getUuid(), ePlayer);
-    }
-
-    @Override
-    public void unstore(EPlayer ePlayer) {
-        this.eplayers.entrySet().removeIf(uuidePlayerEntry -> uuidePlayerEntry.getKey().equals(ePlayer.getUuid()));
-    }
-
-    @Override
-    public boolean exists(UUID uuid) {
-        return this.edestriaEngine.getMongoRetrievalService().exists(EPlayerTracker.collection, new MongoDocumentEntry<>("uuid", uuid.toString()));
-    }
-*/
 }
