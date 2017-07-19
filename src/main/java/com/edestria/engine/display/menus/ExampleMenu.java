@@ -1,28 +1,20 @@
 package com.edestria.engine.display.menus;
 
-import com.edestria.engine.chat.messages.TitleMessage;
-import com.edestria.engine.chat.sounds.MessageSound;
+import com.edestria.engine.EdestriaEngine;
+import com.edestria.engine.display.menus.items.MenuItem;
+import com.edestria.engine.display.menus.rows.Rows;
 import com.edestria.engine.eplayers.EPlayer;
-import com.edestria.engine.utils.items.EItem;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-
-import java.util.concurrent.TimeUnit;
 
 public class ExampleMenu extends Menu {
 
-    public ExampleMenu() {
-        super("$eExample Menu!", Rows.THREE);
-        this.fill(MenuDesign.BORDER, new MenuItem(
-                new EItem(Material.LEATHER_HELMET)
-                        .glowing()
-                        .withArmorColor(Color.BLUE)
-                        .withName("$Example Border")) {
+    public ExampleMenu(EdestriaEngine edestriaEngine) {
+        super("Example", Rows.SIX);
+        this.fill(new MenuItem(Menu.HOLDER, true) {
             @Override
             public void onClick(EPlayer ePlayer) {
-                ePlayer.sendMessage(new TitleMessage("welcome", "$eI LOVE YOU").withDuration(TimeUnit.SECONDS, 10).withMessageSound(new MessageSound(Sound.ENTITY_HORSE_ARMOR)));
+
             }
         });
+        edestriaEngine.getMenuManager().register(this);
     }
 }

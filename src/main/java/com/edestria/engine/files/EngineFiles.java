@@ -29,7 +29,7 @@ public class EngineFiles {
     }
 
     public Object getProperty(String fileName, String property) {
-        File path = new File(this.edestriaEngine.getDataFolder() + File.separator);
+        File path = new File(this.edestriaEngine.getDataFolder() + EngineFiles.SEPARATOR);
         if (path.listFiles() == null) {
             return null;
         }
@@ -44,7 +44,7 @@ public class EngineFiles {
             }
             if (this.getFileExtension(file).equals("properties")) {
                 Properties properties = new Properties();
-                properties.load(new FileInputStream(path + File.separator +  fileName + ".properties"));
+                properties.load(new FileInputStream(path + EngineFiles.SEPARATOR +  fileName + ".properties"));
                 return properties.get(property);
             }
         } catch (IOException exception) {

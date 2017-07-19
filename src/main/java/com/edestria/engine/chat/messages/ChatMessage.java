@@ -1,6 +1,7 @@
 package com.edestria.engine.chat.messages;
 
 import com.edestria.engine.chat.Message;
+import com.edestria.engine.utils.lang.Lang;
 import lombok.Getter;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -38,7 +39,7 @@ public class ChatMessage extends Message<ChatMessage> {
     @Override
     public void to(Player player) {
         if (this.hoverMessage != null) {
-            this.textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent(ChatColor.translateAlternateColorCodes('&', this.hoverMessage))}));
+            this.textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent(Lang.color(hoverMessage))}));
         }
         if (this.url != null) {
             this.textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, this.url));

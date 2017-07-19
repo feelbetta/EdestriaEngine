@@ -1,5 +1,6 @@
 package com.edestria.engine.ranks;
 
+import com.edestria.engine.utils.lang.Lang;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 
@@ -28,7 +29,7 @@ public enum Rank {
     }
 
     public String getPrefix() {
-        return ChatColor.translateAlternateColorCodes('$', prefix);
+        return Lang.color(this.prefix);
     }
 
     public boolean isAtLeast(Rank rank) {

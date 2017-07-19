@@ -61,6 +61,7 @@ public class EdestriaEngine extends JavaPlugin {
         this.registerFiles();
         this.reigsterConnections();
         this.registerServices();
+        this.registerManagers();
         new EFLSEF(this);
     }
 

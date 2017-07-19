@@ -1,5 +1,6 @@
 package com.edestria.engine.utils.items;
 
+import com.edestria.engine.utils.lang.Lang;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -32,21 +33,21 @@ public class EItem extends ItemStack {
 
     public EItem withName(String name) {
         ItemMeta itemMeta = this.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+        itemMeta.setDisplayName(Lang.color(name));
         this.setItemMeta(itemMeta);
         return this;
     }
 
     public EItem withLore(String... lore) {
         ItemMeta itemMeta = this.getItemMeta();
-        itemMeta.setLore(Arrays.stream(lore).map(s -> ChatColor.translateAlternateColorCodes('&', s)).collect(Collectors.toList()));
+        itemMeta.setLore(Arrays.stream(lore).map(Lang::color).collect(Collectors.toList()));
         this.setItemMeta(itemMeta);
         return this;
     }
 
     public EItem glowing() {
         ItemMeta itemMeta = this.getItemMeta();
-        this.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+        itemMeta.addEnchant(Enchantment.DURABILITY, 1, true);
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         this.setItemMeta(itemMeta);
         return this;

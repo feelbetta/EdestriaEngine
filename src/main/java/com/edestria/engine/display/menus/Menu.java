@@ -1,58 +1,25 @@
 package com.edestria.engine.display.menus;
 
+import com.edestria.engine.display.menus.design.MenuDesign;
+import com.edestria.engine.display.menus.items.MenuItem;
+import com.edestria.engine.display.menus.items.ShopMenu;
+import com.edestria.engine.display.menus.rows.Rows;
 import com.edestria.engine.eplayers.EPlayer;
 import com.edestria.engine.utils.items.EItem;
 import com.edestria.engine.utils.lang.Lang;
-import com.google.common.base.Preconditions;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Getter
 public abstract class Menu {
-
-    @AllArgsConstructor @Getter
-    public enum Rows {
-
-        ONE(9),
-        TWO(18),
-        THREE(27),
-        FOUR(36),
-        FIVE(45),
-        SIX(54);
-
-        private final int slots;
-    }
-
-    @Getter
-    public abstract class MenuItem extends EItem {
-
-        private boolean closable;
-
-        public MenuItem(EItem eItem) {
-            super(eItem);
-        }
-
-        public MenuItem(EItem eItem, boolean closable) {
-            this(eItem);
-            this.closable = closable;
-        }
-
-        public abstract void onClick(EPlayer ePlayer);
-    }
-
-    public enum MenuDesign {
-        BORDER
-    }
 
     private final String name;
 
@@ -60,43 +27,37 @@ public abstract class Menu {
     private final Inventory inventory;
 
     private final Map<Integer, MenuItem> itemClickActions = new HashMap<>();
-    private final BiFunction<IntStream, MenuItem, Map<Integer, MenuItem>> slotMapping = (intStream, menuItem) -> intStream.boxed().collect(Collectors.toMap(slot -> slot, slot -> menuItem));
+
+    public static final EItem HOLDER = new EItem(Material.STAINED_GLASS_PANE).withData(7).withName(" ");
 
     public Menu(String name, Rows rows) {
-        this.name = name;
+        this.name = Lang.color(StringUtils.repeat(" ", ((30 - ("%n" + name).length()) / 2) + 3) + "$n" + name);
         this.rows = rows;
-        this.inventory = Bukkit.createInventory(null, this.rows.getSlots(), Lang.color(name));
+        this.inventory = Bukkit.createInventory(null, this.rows.getSlots(), this.name);
     }
 
-    public void addItem(Rows rows, int slot, MenuItem menuItem) {
-        Preconditions.checkArgument(slot > 9 || slot < 1, "Slot must be 1-9.");
-        int position = (rows.getSlots() / 9) * 9 + slot - 9 - 1;
+    public void addMenuItem(Rows rows, int slot, MenuItem menuItem) {
+        int position = rows.getRelativeSlot(rows, slot);
         this.inventory.setItem(position, menuItem);
         this.itemClickActions.put(position, menuItem);
     }
 
     public void fill(MenuItem menuItem) {
-        this.slotMapping.apply(IntStream.range(0, this.inventory.getSize()), menuItem).forEach(this.inventory::setItem);
+        IntStream.range(0, this.inventory.getSize()).forEach(slot -> {
+            this.inventory.setItem(slot, menuItem);
+            this.itemClickActions.put(slot, menuItem);
+        });
     }
 
     public void fill(MenuDesign menuDesign, MenuItem menuItem) {
         switch (menuDesign) {
             case BORDER:
-                int size = this.inventory.getSize();
-                int rows = size / 9;
-
-                if (rows < 3) {
-                    return;
-                }
-                this.slotMapping.apply(IntStream.range(0, 9), menuItem).forEach(this.inventory::setItem);
-                IntStream.iterate(8, slot -> slot += 9).limit(this.inventory.getSize() - 9).forEach(slot -> {
-                    int lastSlot = slot + 1;
-                    this.inventory.setItem(slot, menuItem);
-                    this.inventory.setItem(lastSlot, menuItem);
-                });
-                this.slotMapping.apply(IntStream.range(this.inventory.getSize() - 9, this.inventory.getSize()), menuItem).forEach(this.inventory::setItem);
                 break;
         }
+    }
+
+    public String getRawName() {
+        return Lang.uncolor(this.name);
     }
 
     public Optional<MenuItem> getMenuItem(int slot) {
@@ -108,7 +69,42 @@ public abstract class Menu {
         return menuItem.isPresent() && menuItem.get().isClosable();
     }
 
-    public void openFor(Player player) {
-        player.openInventory(this.inventory);
+    public void openFor(EPlayer ePlayer) {
+        Arrays.stream(this.inventory.getContents()).filter(Objects::nonNull).filter(itemStack -> itemStack.getItemMeta().hasLore() || itemStack.getItemMeta().hasDisplayName()).forEach(itemStack -> {
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta.hasDisplayName()) {
+                itemMeta.setDisplayName(this.updatePlaceholders(ePlayer, itemMeta.getDisplayName()));
+            }
+            if (itemMeta.hasLore()) {
+                itemMeta.setLore(this.updatePlaceholders(ePlayer, itemMeta.getLore()));
+            }
+            itemStack.setItemMeta(itemMeta);
+        });
+        ePlayer.getBukkitPlayer().ifPresent(player -> player.openInventory(this.inventory));
+        ePlayer.setOpenMenu(this);
+    }
+
+    public boolean isShop() {
+        return this.itemClickActions.values().stream().anyMatch(ShopMenu.ShopItem.class::isInstance);
+    }
+
+    private List<String> updatePlaceholders(EPlayer ePlayer, List<String> strings) {
+        return strings.stream().map(s -> s.replace("%gold%", ePlayer.getGold() + "").replace("%name%", ePlayer.getBukkitPlayer().get().getName()).replace("%rank%", ePlayer.getRank().toString()).replace("%guild%", ePlayer.getGuild())).collect(Collectors.toList());
+    }
+
+    private String updatePlaceholders(EPlayer ePlayer, String string) {
+        return string.replace("%gold%", ePlayer.getGold() + "").replace("%name%", ePlayer.getBukkitPlayer().get().getName()).replace("%rank%", ePlayer.getRank().toString()).replace("%guild%", ePlayer.getGuild());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Menu)) {
+            return false;
+        }
+        Menu menu = (Menu) obj;
+        if (menu.getName().equals(this.getName())) {
+            return true;
+        }
+        return false;
     }
 }
