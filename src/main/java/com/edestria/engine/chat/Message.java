@@ -4,7 +4,6 @@ import com.edestria.engine.chat.sounds.MessageSound;
 import com.edestria.engine.Sendable;
 import com.edestria.engine.utils.lang.Lang;
 import lombok.Getter;
-import org.bukkit.ChatColor;
 
 @Getter
 public abstract class Message<T extends Message<T>> implements Sendable {

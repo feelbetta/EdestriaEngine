@@ -2,7 +2,6 @@ package com.edestria.engine.display.menus;
 
 import com.edestria.engine.display.menus.design.MenuDesign;
 import com.edestria.engine.display.menus.items.MenuItem;
-import com.edestria.engine.display.menus.items.ShopMenu;
 import com.edestria.engine.display.menus.rows.Rows;
 import com.edestria.engine.eplayers.EPlayer;
 import com.edestria.engine.utils.items.EItem;
@@ -12,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
@@ -31,7 +31,7 @@ public abstract class Menu {
     public static final EItem HOLDER = new EItem(Material.STAINED_GLASS_PANE).withData(7).withName(" ");
 
     public Menu(String name, Rows rows) {
-        this.name = Lang.color(StringUtils.repeat(" ", ((30 - ("%n" + name).length()) / 2) + 3) + "$n" + name);
+        this.name = Lang.color(StringUtils.repeat(" ", ((30 - ("%n" + name).length()) / 2) + 5) + "$n" + name);
         this.rows = rows;
         this.inventory = Bukkit.createInventory(null, this.rows.getSlots(), this.name);
     }
@@ -88,6 +88,18 @@ public abstract class Menu {
         return this.itemClickActions.values().stream().anyMatch(ShopMenu.ShopItem.class::isInstance);
     }
 
+    public ItemStack updatePlaceholders(EPlayer ePlayer, ItemStack itemStack) {
+        EItem eItem = new EItem(itemStack);
+        ItemMeta itemMeta = eItem.getItemMeta();
+        if (itemMeta.hasDisplayName()) {
+            eItem.withName(this.updatePlaceholders(ePlayer, itemMeta.getDisplayName()));
+        }
+        if (itemMeta.hasLore()) {
+            eItem.withLore(this.updatePlaceholders(ePlayer, itemMeta.getLore()));
+        }
+        return eItem;
+    }
+
     private List<String> updatePlaceholders(EPlayer ePlayer, List<String> strings) {
         return strings.stream().map(s -> s.replace("%gold%", ePlayer.getGold() + "").replace("%name%", ePlayer.getBukkitPlayer().get().getName()).replace("%rank%", ePlayer.getRank().toString()).replace("%guild%", ePlayer.getGuild())).collect(Collectors.toList());
     }
@@ -102,9 +114,6 @@ public abstract class Menu {
             return false;
         }
         Menu menu = (Menu) obj;
-        if (menu.getName().equals(this.getName())) {
-            return true;
-        }
-        return false;
+        return menu.getName().equals(this.getName());
     }
 }

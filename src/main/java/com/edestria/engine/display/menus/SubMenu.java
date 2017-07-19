@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class SubMenu extends Menu {
 
-    private Menu parent;
+    private final Menu parent;
 
     public SubMenu(Menu parent, String name, Rows rows) {
         super(name, rows);

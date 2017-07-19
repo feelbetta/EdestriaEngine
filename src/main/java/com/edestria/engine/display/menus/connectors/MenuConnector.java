@@ -13,8 +13,8 @@ public class MenuConnector extends MenuItem {
 
     private MenuItem menuItem;
 
-    private Menu from;
-    private Menu to;
+    private final Menu from;
+    private final Menu to;
 
     public MenuConnector(Menu from, Menu to, EItem icon) {
         super(icon, new MessageSound(Sound.UI_BUTTON_CLICK));

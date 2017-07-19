@@ -9,7 +9,7 @@
         <module name="EdestriaEngine" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.8">
       <module name="EdestriaEngine" target="1.8" />
     </bytecodeTargetLevel>
   </component>

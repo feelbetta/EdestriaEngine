@@ -1,8 +1,8 @@
-package com.edestria.engine.display.menus.items;
+package com.edestria.engine.display.menus;
 
 import com.edestria.engine.chat.messages.ChatMessage;
 import com.edestria.engine.chat.sounds.MessageSound;
-import com.edestria.engine.display.menus.Menu;
+import com.edestria.engine.display.menus.items.MenuItem;
 import com.edestria.engine.display.menus.rows.Rows;
 import com.edestria.engine.eplayers.EPlayer;
 import com.edestria.engine.utils.items.EItem;
@@ -20,7 +20,7 @@ public class ShopMenu extends Menu {
     @Getter
     public abstract class ShopItem extends MenuItem {
 
-        private int cost;
+        private final int cost;
 
         public ShopItem(EItem eItem, int cost) {
             super(eItem);

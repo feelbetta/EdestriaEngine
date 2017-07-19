@@ -11,7 +11,7 @@ import java.util.Optional;
 public abstract class MenuItem extends EItem {
 
     private boolean closable;
-    private MessageSound messageSound;
+    private final MessageSound messageSound;
 
     public MenuItem(EItem eItem, boolean closable, MessageSound messageSound) {
         super(eItem);

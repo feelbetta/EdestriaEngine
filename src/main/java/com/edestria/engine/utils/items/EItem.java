@@ -1,8 +1,6 @@
 package com.edestria.engine.utils.items;
 
 import com.edestria.engine.utils.lang.Lang;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -14,6 +12,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class EItem extends ItemStack {
@@ -41,6 +40,13 @@ public class EItem extends ItemStack {
     public EItem withLore(String... lore) {
         ItemMeta itemMeta = this.getItemMeta();
         itemMeta.setLore(Arrays.stream(lore).map(Lang::color).collect(Collectors.toList()));
+        this.setItemMeta(itemMeta);
+        return this;
+    }
+
+    public EItem withLore(List<String> lore) {
+        ItemMeta itemMeta = this.getItemMeta();
+        itemMeta.setLore(lore.stream().map(Lang::color).collect(Collectors.toList()));
         this.setItemMeta(itemMeta);
         return this;
     }
