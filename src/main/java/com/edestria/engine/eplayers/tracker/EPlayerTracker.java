@@ -1,4 +1,4 @@
-package com.edestria.engine.eplayers.services;
+package com.edestria.engine.eplayers.tracker;
 
 import com.edestria.engine.EdestriaEngine;
 import com.edestria.engine.data.DataTracker;
@@ -16,8 +16,10 @@ import java.util.UUID;
 
 public class EPlayerTracker extends DataTracker<EPlayer, UUID> implements Listener {
 
+    private static final String COLLECTION_NAME = "eplayers";
+
     public EPlayerTracker(EdestriaEngine edestriaEngine) {
-        super(edestriaEngine, "uuid", edestriaEngine.getMongoConnection().getActiveCollection("eplayers"), new HashMap<>(), EPlayer::new);
+        super(edestriaEngine, "uuid", edestriaEngine.getMongoConnection().getActiveCollection(EPlayerTracker.COLLECTION_NAME), new HashMap<>(), EPlayer::new);
         Bukkit.getServer().getPluginManager().registerEvents(this, edestriaEngine);
     }
 

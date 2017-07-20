@@ -27,14 +27,9 @@ public class TitleMessage extends Message<TitleMessage> {
     }
 
     @Override
-    public void to(Player player) {
+    public void sendAs(Player player) {
         boolean hasSubtitle = this.getMessage().contains(TitleMessage.SEPARATOR);
         String[] message = hasSubtitle ? this.getMessage().split(TitleMessage.SEPARATOR) : new String[]{this.getMessage()};
         player.sendTitle(message[0], message.length > 1 ? message[1] : "",  TitleMessage.IN_OUT_DELAY, this.duration, TitleMessage.IN_OUT_DELAY);
-
-        if (this.getMessageSound() == null) {
-            return;
-        }
-        getMessageSound().to(player);
     }
 }

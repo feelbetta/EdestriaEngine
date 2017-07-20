@@ -33,9 +33,9 @@ public class MessageSequence implements Sendable {
             int i = 0;
             @Override
             public void run() {
-                messages.get(i).to(player);
+                MessageSequence.this.messages.get(i).forPlayer(player);
                 i++;
-                if (i < messages.size()) {
+                if (i < MessageSequence.this.messages.size()) {
                     return;
                 }
                 cancel();

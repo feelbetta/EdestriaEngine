@@ -46,7 +46,7 @@ public class MongoConnection {
                     this.edestriaEngine.getEngineLogger().log(EngineLogger.LogType.INFO, "Successfully established database connection.");
                     return true;
                 } catch (Exception exception) {
-                    this.edestriaEngine.getEngineLogger().log(EngineLogger.LogType.WARNING, "Unable to connect to database services. (" + exception.getMessage() + ")");
+                    this.edestriaEngine.getEngineLogger().log(EngineLogger.LogType.WARNING, "Unable to connect to database tracker. (" + exception.getMessage() + ")");
                     return false;
                 }
             }).get();

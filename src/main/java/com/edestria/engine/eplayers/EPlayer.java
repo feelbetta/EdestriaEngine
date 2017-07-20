@@ -21,7 +21,7 @@ public class EPlayer {
     private String name;
     private Rank rank;
 
-    private String lastLogin;
+    private String firstJoin, lastLogin;
 
     private int gold;
     private String guild;
@@ -34,6 +34,7 @@ public class EPlayer {
         this.uuid = uuid;
         this.rank = Rank.DEFAULT;
         this.guild = "none";
+        this.firstJoin = Time.formatDate(new Date());
         this.lastLogin = Time.formatDate(new Date());
     }
 
@@ -52,7 +53,7 @@ public class EPlayer {
     }
 
     public void sendMessage(Message message) {
-        this.getBukkitPlayer().ifPresent(message::to);
+        this.getBukkitPlayer().ifPresent(message::forPlayer);
     }
 
     public void sendMessage(String message) {

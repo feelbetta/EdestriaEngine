@@ -1,6 +1,5 @@
 package com.edestria.engine.database.mongo.services;
 
-import com.edestria.engine.EdestriaEngine;
 import com.edestria.engine.database.mongo.MongoDocumentEntry;
 import com.edestria.engine.database.mongo.MongoDocumentIdentifier;
 import com.mongodb.client.MongoCollection;
@@ -19,12 +18,6 @@ public class MongoRetrievalService {
         public MongoObject(T type) {
             this.type = type;
         }
-    }
-
-    private final EdestriaEngine edestriaEngine;
-
-    public MongoRetrievalService(EdestriaEngine edestriaEngine) {
-        this.edestriaEngine = edestriaEngine;
     }
 
     public boolean exists(MongoCollection collection, MongoDocumentEntry mongoDocumentEntry) {

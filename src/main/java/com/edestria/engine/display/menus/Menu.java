@@ -11,11 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Getter
@@ -70,42 +67,13 @@ public abstract class Menu {
     }
 
     public void openFor(EPlayer ePlayer) {
-        Arrays.stream(this.inventory.getContents()).filter(Objects::nonNull).filter(itemStack -> itemStack.getItemMeta().hasLore() || itemStack.getItemMeta().hasDisplayName()).forEach(itemStack -> {
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            if (itemMeta.hasDisplayName()) {
-                itemMeta.setDisplayName(this.updatePlaceholders(ePlayer, itemMeta.getDisplayName()));
-            }
-            if (itemMeta.hasLore()) {
-                itemMeta.setLore(this.updatePlaceholders(ePlayer, itemMeta.getLore()));
-            }
-            itemStack.setItemMeta(itemMeta);
-        });
+        this.inventory.setContents(Lang.updatePlaceholders(ePlayer, this.inventory));
         ePlayer.getBukkitPlayer().ifPresent(player -> player.openInventory(this.inventory));
         ePlayer.setOpenMenu(this);
     }
 
     public boolean isShop() {
         return this.itemClickActions.values().stream().anyMatch(ShopMenu.ShopItem.class::isInstance);
-    }
-
-    public ItemStack updatePlaceholders(EPlayer ePlayer, ItemStack itemStack) {
-        EItem eItem = new EItem(itemStack);
-        ItemMeta itemMeta = eItem.getItemMeta();
-        if (itemMeta.hasDisplayName()) {
-            eItem.withName(this.updatePlaceholders(ePlayer, itemMeta.getDisplayName()));
-        }
-        if (itemMeta.hasLore()) {
-            eItem.withLore(this.updatePlaceholders(ePlayer, itemMeta.getLore()));
-        }
-        return eItem;
-    }
-
-    private List<String> updatePlaceholders(EPlayer ePlayer, List<String> strings) {
-        return strings.stream().map(s -> s.replace("%gold%", ePlayer.getGold() + "").replace("%name%", ePlayer.getName()).replace("%rank%", ePlayer.getRank().toString()).replace("%guild%", ePlayer.getGuild())).collect(Collectors.toList());
-    }
-
-    private String updatePlaceholders(EPlayer ePlayer, String string) {
-        return string.replace("%gold%", ePlayer.getGold() + "").replace("%name%", ePlayer.getName()).replace("%rank%", ePlayer.getRank().toString()).replace("%guild%", ePlayer.getGuild());
     }
 
     @Override

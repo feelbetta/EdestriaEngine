@@ -1,11 +1,10 @@
 package com.edestria.engine;
 
-import com.edestria.engine.commands.EFLSEF;
 import com.edestria.engine.database.mongo.connection.MongoConnection;
 import com.edestria.engine.database.mongo.services.MongoRetrievalService;
 import com.edestria.engine.database.mongo.services.MongoUpsertService;
 import com.edestria.engine.display.menus.manager.MenuManager;
-import com.edestria.engine.eplayers.services.EPlayerTracker;
+import com.edestria.engine.eplayers.tracker.EPlayerTracker;
 import com.edestria.engine.files.EngineFiles;
 import com.edestria.engine.gson.services.GSONService;
 import com.edestria.engine.logging.EngineLogger;
@@ -62,7 +61,6 @@ public class EdestriaEngine extends JavaPlugin {
         this.reigsterConnections();
         this.registerServices();
         this.registerManagers();
-        new EFLSEF(this);
     }
 
     @Override
@@ -89,7 +87,7 @@ public class EdestriaEngine extends JavaPlugin {
     }
 
     private void registerServices() {
-        this.mongoRetrievalService = new MongoRetrievalService(this);
+        this.mongoRetrievalService = new MongoRetrievalService();
         this.mongoUpsertService = new MongoUpsertService(this);
         this.timerService = new TimerService(this);
         this.ePlayerService = new EPlayerTracker(this);

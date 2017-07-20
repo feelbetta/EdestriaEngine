@@ -13,11 +13,8 @@ public class GSONService {
 
     @Getter private final Gson gson;
 
-    private final EdestriaEngine edestriaEngine;
-
     public GSONService(EdestriaEngine edestriaEngine) {
-        this.edestriaEngine = edestriaEngine;
-        this.gson = new GsonBuilder().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).registerTypeAdapter(GuildTypeAdapter.class, new GuildTypeAdapter(this.edestriaEngine.getGsonService())).setPrettyPrinting().create();
+        this.gson = new GsonBuilder().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).registerTypeAdapter(GuildTypeAdapter.class, new GuildTypeAdapter(edestriaEngine.getGsonService())).setPrettyPrinting().create();
     }
 
     public String serialize(Object object) {

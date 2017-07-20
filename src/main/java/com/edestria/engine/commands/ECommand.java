@@ -34,7 +34,7 @@ public abstract class ECommand extends ECommandInjector implements ECommandInjec
      * Registers all command handlers and subcommand handlers in a class, matching them with their corresponding commands and subcommands registered to the specified plugin.
      */
 
-    public ECommand(EdestriaEngine edestriaEngine) {
+    ECommand(EdestriaEngine edestriaEngine) {
         super("");
         registerCommands(JavaPlugin.getPlugin(EdestriaEngine.class), this);
         this.edestriaEngine = edestriaEngine;
