@@ -25,7 +25,7 @@ public class EPlayer {
     private String name;
     private Rank rank;
 
-    private String firstJoin, lastLogin;
+    private String firstLogin, lastLogin;
 
     private int gold;
     private String guild;
@@ -38,7 +38,7 @@ public class EPlayer {
     public EPlayer(UUID uuid) {
         this.uuid = uuid;
         this.rank = Rank.DEFAULT;
-        this.firstJoin = Time.formatDate(new Date());
+        this.lastLogin = Time.formatDate(new Date());
         this.lastLogin = Time.formatDate(new Date());
     }
 

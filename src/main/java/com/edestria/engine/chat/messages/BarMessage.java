@@ -19,6 +19,11 @@ public class BarMessage extends Message<BarMessage> {
         this.bossBar.setProgress(1);
     }
 
+    public BarMessage withColor(BarColor color) {
+        this.bossBar.setColor(color);
+        return this;
+    }
+
     @Override
     public void sendAs(Player player) {
         double progress = this.bossBar.getProgress() - (1 / (double) this.getDuration());
