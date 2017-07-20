@@ -41,17 +41,24 @@ public abstract class Message<T extends Message<T>> {
             return;
         }
         new BukkitRunnable() {
-            final int i = 0;
+            int i = 0;
             @Override
             public void run() {
                 Message.this.sendAs(player);
                 if (i < Message.this.duration) {
+                    i++;
                     return;
                 }
                 cancel();
+                Message.this.finish();
+                System.out.println("CALLED FINISH METHOD");
             }
         }.runTaskTimer(JavaPlugin.getPlugin(EdestriaEngine.class), 0, 1);
     }
 
     public abstract void sendAs(Player player);
+
+    public void finish() {
+
+    }
 }

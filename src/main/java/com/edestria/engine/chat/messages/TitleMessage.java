@@ -1,17 +1,12 @@
 package com.edestria.engine.chat.messages;
 
 import com.edestria.engine.chat.Message;
-import com.edestria.engine.utils.time.Time;
 import org.bukkit.entity.Player;
-
-import java.util.concurrent.TimeUnit;
 
 public class TitleMessage extends Message<TitleMessage> {
 
     private static final String SEPARATOR = "%n";
     private static final int IN_OUT_DELAY = 4;
-
-    private int duration;
 
     public TitleMessage(String title, String subtitle) {
         super(title + TitleMessage.SEPARATOR + subtitle);
@@ -21,15 +16,21 @@ public class TitleMessage extends Message<TitleMessage> {
         super(title);
     }
 
-    public TitleMessage withDuration(TimeUnit timeUnit, int duration) {
-        this.duration = (int) Time.toTicks(timeUnit, duration);
-        return this;
+    @Override
+    public void forPlayer(Player player) {
+        boolean hasSubtitle = this.getMessage().contains(TitleMessage.SEPARATOR);
+        String[] message = hasSubtitle ? this.getMessage().split(TitleMessage.SEPARATOR) : new String[]{this.getMessage()};
+        if (this.getMessageSound() != null) {
+            this.getMessageSound().to(player);
+        }
+        if (this.getDuration() < 1) {
+            player.sendTitle(message[0], message.length > 1 ? message[1] : "",  TitleMessage.IN_OUT_DELAY, 30, TitleMessage.IN_OUT_DELAY);
+            return;
+        }
+        player.sendTitle(message[0], message.length > 1 ? message[1] : "",  TitleMessage.IN_OUT_DELAY, this.getDuration(), TitleMessage.IN_OUT_DELAY);
     }
 
     @Override
     public void sendAs(Player player) {
-        boolean hasSubtitle = this.getMessage().contains(TitleMessage.SEPARATOR);
-        String[] message = hasSubtitle ? this.getMessage().split(TitleMessage.SEPARATOR) : new String[]{this.getMessage()};
-        player.sendTitle(message[0], message.length > 1 ? message[1] : "",  TitleMessage.IN_OUT_DELAY, this.duration, TitleMessage.IN_OUT_DELAY);
     }
 }

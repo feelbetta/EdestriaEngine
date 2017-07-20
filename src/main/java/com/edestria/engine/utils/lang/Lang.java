@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Lang {
@@ -22,7 +23,7 @@ public class Lang {
     }
 
     public static ItemStack[] updatePlaceholders(EPlayer ePlayer, Inventory inventory) {
-        return Arrays.stream(inventory.getContents()).filter(itemStack -> itemStack.getItemMeta().hasLore() || itemStack.getItemMeta().hasDisplayName()).map(itemStack -> Lang.updatePlaceholders(ePlayer, itemStack)).toArray(ItemStack[]::new);
+        return Arrays.stream(inventory.getContents()).filter(Objects::nonNull).filter(itemStack -> itemStack.getItemMeta().hasLore() || itemStack.getItemMeta().hasDisplayName()).map(itemStack -> Lang.updatePlaceholders(ePlayer, itemStack)).toArray(ItemStack[]::new);
     }
 
     public static ItemStack updatePlaceholders(EPlayer ePlayer, ItemStack itemStack) {

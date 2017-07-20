@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 @Getter
-public abstract class Menu {
+public class Menu {
 
     private final String name;
 

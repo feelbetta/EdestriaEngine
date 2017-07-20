@@ -4,6 +4,10 @@ import com.edestria.engine.chat.Message;
 import com.edestria.engine.chat.MessageSequence;
 import com.edestria.engine.chat.sounds.MessageSound;
 import com.edestria.engine.display.menus.Menu;
+import com.edestria.engine.guilds.Guild;
+import com.edestria.engine.invites.Invite;
+import com.edestria.engine.invites.friend.FriendInvite;
+import com.edestria.engine.invites.guild.GuildInvite;
 import com.edestria.engine.ranks.Rank;
 import com.edestria.engine.utils.lang.Lang;
 import com.edestria.engine.utils.time.Time;
@@ -25,20 +29,63 @@ public class EPlayer {
 
     private int gold;
     private String guild;
+    private Set<Invite> invites = new HashSet<>();
 
-    private Set<UUID> friends, friendRequests = new HashSet<>();
+    private Set<UUID> friends = new HashSet<>();
 
     private transient Menu openMenu;
 
     public EPlayer(UUID uuid) {
         this.uuid = uuid;
         this.rank = Rank.DEFAULT;
-        this.guild = "none";
         this.firstJoin = Time.formatDate(new Date());
         this.lastLogin = Time.formatDate(new Date());
     }
 
+    public void sendFriendRequest(EPlayer ePlayer) {
+        ePlayer.getInvites().add(new FriendInvite(this));
+    }
+
+    public void acceptFriendRequest(EPlayer ePlayer) {
+        this.denyFriendRequest(ePlayer);
+
+        ePlayer.getFriends().add(ePlayer.getUuid());
+        this.getFriends().add(ePlayer.getUuid());
+    }
+
+    public void denyFriendRequest(EPlayer ePlayer) {
+        this.getInvites().removeIf(ePlayer.getUuid()::equals);
+    }
+
+    public void removeFriend(EPlayer ePlayer) {
+        ePlayer.friends.removeIf(this.uuid::equals);
+        this.friends.removeIf(ePlayer.getUuid()::equals);
+    }
+    
+    public void sendGuildInvite(EPlayer ePlayer) {
+        GuildInvite guildInvite = new GuildInvite(this);
+        guildInvite.setType(this.guild);
+        ePlayer.getInvites().add(guildInvite);
+    }
+
+    public void acceptGuildInvite(EPlayer ePlayer) {
+        this.denyGuildInvite(ePlayer);
+        this.setGuild(ePlayer.getGuild());
+    }
+
+    public void denyGuildInvite(EPlayer ePlayer) {
+        this.getInvites().removeIf(ePlayer.getUuid()::equals);
+    }
+
+    public void leaveGuild(Guild guild) {
+        this.guild = null;
+        guild.getMembers().removeIf(this.uuid::equals);
+    }
     public EPlayer() {
+    }
+
+    public boolean hasGuild() {
+        return this.guild != null;
     }
 
     public void playSound(MessageSound messageSound) {
