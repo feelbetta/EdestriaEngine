@@ -45,4 +45,8 @@ public class Lang {
     public static String updatePlaceholders(EPlayer ePlayer, String string) {
         return string.replace("%gold%", ePlayer.getGold() + "").replace("%name%", ePlayer.getName()).replace("%rank%", ePlayer.getRank().toString()).replace("%guild%", ePlayer.getGuild());
     }
+    
+    public void sendToSender(CommandSender commandSender, String message) {
+         commandSender.sendMessage(Lang.color(message));
+    }
 }
